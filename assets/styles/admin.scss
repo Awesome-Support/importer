@@ -1,0 +1,76 @@
+#awesome-support-importer {
+  form {
+    overflow: hidden;
+    width: 100%;
+    min-height: 300px;
+    margin-bottom: 30px;
+  }
+}
+
+#awesome-support-importer.wrap {
+  label {
+    width: 250px;
+    float: left;
+  }
+
+  p.option {
+    width: 100%;
+    float: left;
+
+    input,
+    select {
+      min-width: 300px;
+    }
+  }
+}
+
+#awesome-support-importing-tickets-message {
+  display: none;
+}
+
+.awesome-support-importer-status-message {
+  background: #fff;
+  border-left: 4px solid #fff;
+  -webkit-box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .1);
+  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .1);
+  margin: 5px 15px 2px;
+  padding: 1px 12px;
+  &.is-success {
+    border-left-color: #46b450;
+  }
+
+  &.is-error {
+    border-left-color: #dc3232;
+  }
+}
+
+.awesome-support-importer-message {
+  background: #fff;
+  -webkit-box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .1);
+  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .1);
+  margin: 5px 0;
+  padding: 1px 5px;
+
+  .is-error {
+    background: #dc3232;
+    color: #fff;
+  }
+}
+
+/*
+Help Scout
+ */
+[data-helpscout="1"],
+#awesome-support-get-helpscout-mailboxes {
+  display: none;
+}
+
+#awesome-support-importer[data-selectedapi="help-scout"] {
+  [data-helpscout="1"] {
+    display: block;
+  }
+
+  #awesome-support-get-helpscout-mailboxes {
+    display: inline-block;
+  }
+}

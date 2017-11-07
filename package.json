@@ -1,0 +1,105 @@
+{
+  "name": "awesome-support-importer",
+  "version": "1.0.0",
+  "author": "Pressware, LLC",
+  "homepage": "https://pressware.co",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/pressware/awesome-support-importer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/pressware/awesome-support-importer/issues"
+  },
+  "licenses": [
+    {
+      "type": "GPLv3",
+      "url": "https://www.gnu.org/licenses/gpl-3.0.en.html"
+    }
+  ],
+  "eslintConfig": {
+    "root": true,
+    "extends": "eslint:recommended",
+    "globals": {
+      "wp": true,
+      "ajaxurl": true
+    },
+    "env": {
+      "node": true,
+      "es6": true,
+      "amd": true,
+      "browser": true,
+      "jquery": true
+    },
+    "parserOptions": {
+      "ecmaFeatures": {
+        "globalReturn": true,
+        "generators": false,
+        "objectLiteralDuplicateProperties": false,
+        "experimentalObjectRestSpread": true
+      },
+      "ecmaVersion": 2017,
+      "sourceType": "module"
+    },
+    "plugins": [
+      "import"
+    ],
+    "settings": {
+      "import/core-modules": [],
+      "import/ignore": [
+        "node_modules",
+        "\\.(coffee|scss|css|less|hbs|svg|json)$"
+      ]
+    },
+    "rules": {
+      "comma-dangle": [
+        "error",
+        {
+          "arrays": "always-multiline",
+          "objects": "always-multiline",
+          "imports": "always-multiline",
+          "exports": "always-multiline",
+          "functions": "ignore"
+        }
+      ]
+    }
+  },
+  "stylelint": {
+    "extends": "stylelint-config-standard",
+    "rules": {
+      "no-empty-source": null
+    }
+  },
+  "scripts": {
+    "lint": "npm run -s lint:scripts && npm run -s lint:styles",
+    "lint:scripts": "eslint assets/scripts assets/build",
+    "lint:styles": "stylelint assets/styles/**/*.{css,sass,scss,sss,less}",
+    "test": "npm run -s lint"
+  },
+  "engines": {
+    "node": ">= 6.9.4"
+  },
+  "devDependencies": {
+    "babel-core": "~6",
+    "babel-preset-es2015": "~6",
+    "css-mqpacker": "~6",
+    "eslint-plugin-import": "~2.7",
+    "gulp": "~3",
+    "gulp-babel": "~6",
+    "gulp-concat": "~2",
+    "gulp-eslint": "~4",
+    "gulp-cssnano": "~2",
+    "gulp-notify": "~3",
+    "gulp-plumber": "~1",
+    "gulp-rename": "~1",
+    "gulp-postcss": "~7",
+    "gulp-sass": "~3",
+    "gulp-sass-lint": "~1",
+    "gulp-sourcemaps": "~2",
+    "gulp-uglify": "~3",
+    "gulp-util": "~3",
+    "eslint": "~4",
+    "stylelint": "~7.12",
+    "eslint-config-wordpress": "~2"
+  }
+}

@@ -1,0 +1,342 @@
+{
+  "item": {
+    "id": 458887447,
+    "type": "email",
+    "folderId": 1659005,
+    "isDraft": false,
+    "number": 1391,
+    "owner": {
+      "id": 1,
+      "firstName": "Willie",
+      "lastName": "Mays",
+      "email": "wmays@example.com",
+      "phone": null,
+      "type": "user",
+      "photoUrl": null
+    },
+    "mailbox": {
+      "id": 126266,
+      "name": "Awesome Support"
+    },
+    "customer": {
+      "id": 2,
+      "firstName": "Barry",
+      "lastName": "White",
+      "email": "barrywhite@gmail.com",
+      "phone": null,
+      "type": "customer",
+      "emails": [
+        "barrywhite@gmail.com"
+      ],
+      "photoUrl": "https://d2ojpxxtu63wzl.cloudfront.net/static/c5db53d0d2ac84c7613eaa587cb90fb0_b71045039e8ca1964597b8aaa80972bf4d6591875bba73da88141f6742ced713",
+      "customerPersonType": true
+    },
+    "threadCount": 2,
+    "status": "pending",
+    "subject": "Foo Ticket",
+    "preview": "Yo Barry, Ignore this one. Just playing around.....",
+    "createdBy": {
+      "id": 2,
+      "firstName": "Barry",
+      "lastName": "White",
+      "email": "barrywhite@gmail.com",
+      "phone": null,
+      "type": "customer",
+      "emails": [
+        "barrywhite@gmail.com"
+      ],
+      "photoUrl": "https://d2ojpxxtu63wzl.cloudfront.net/static/c5db53d0d2ac84c7613eaa587cb90fb0_b71045039e8ca1964597b8aaa80972bf4d6591875bba73da88141f6742ced713",
+      "customerPersonType": true
+    },
+    "createdAt": "2017-10-31T16:54:00Z",
+    "modifiedAt": "2017-11-01T23:10:55Z",
+    "closedAt": null,
+    "closedBy": null,
+    "source": {
+      "type": "email",
+      "via": "customer"
+    },
+    "cc": [],
+    "bcc": [],
+    "tags": null,
+    "threads": [
+      {
+        "id": 1244439717,
+        "type": "message",
+        "assignedTo": {
+          "id": 1,
+          "firstName": "Willie",
+          "lastName": "Mays",
+          "email": "wmays@example.com",
+          "phone": null,
+          "type": "user",
+          "photoUrl": null
+        },
+        "status": "pending",
+        "createdAt": "2017-10-31T23:10:55Z",
+        "openedAt": null,
+        "createdBy": {
+          "id": 1,
+          "firstName": "Willie",
+          "lastName": "Mays",
+          "email": "wmays@example.com",
+          "phone": null,
+          "type": "user",
+          "photoUrl": null
+        },
+        "source": {
+          "type": "web",
+          "via": "user"
+        },
+        "actionType": "originalCreator",
+        "actionSourceId": 1,
+        "fromMailbox": null,
+        "state": "published",
+        "customer": {
+          "id": 2,
+          "firstName": "Barry",
+          "lastName": "White",
+          "email": "barrywhite@gmail.com",
+          "phone": null,
+          "type": "customer",
+          "emails": [
+            "barrywhite@gmail.com"
+          ],
+          "photoUrl": "https://d2ojpxxtu63wzl.cloudfront.net/static/c5db53d0d2ac84c7613eaa587cb90fb0_b71045039e8ca1964597b8aaa80972bf4d6591875bba73da88141f6742ced713",
+          "customerPersonType": true
+        },
+        "body": "Yo Barry, Ignore this one. Just playing around.....",
+        "to": null,
+        "cc": [],
+        "bcc": [],
+        "attachments": null,
+        "savedReplyId": 0,
+        "createdByCustomer": false
+      },
+      {
+        "id": 1244395999,
+        "type": "note",
+        "assignedTo": {
+          "id": 1,
+          "firstName": "Willie",
+          "lastName": "Mays",
+          "email": "wmays@example.com",
+          "phone": null,
+          "type": "user",
+          "photoUrl": null
+        },
+        "status": "active",
+        "createdAt": "2017-10-31T22:27:33Z",
+        "openedAt": null,
+        "createdBy": {
+          "id": 1,
+          "firstName": "Willie",
+          "lastName": "Mays",
+          "email": "wmays@example.com",
+          "phone": null,
+          "type": "user",
+          "photoUrl": null
+        },
+        "source": {
+          "type": "web",
+          "via": "user"
+        },
+        "actionType": "originalCreator",
+        "actionSourceId": 1,
+        "fromMailbox": null,
+        "state": "published",
+        "customer": null,
+        "body": "This is a note. It does not get imported.",
+        "to": null,
+        "cc": [],
+        "bcc": [],
+        "attachments": null,
+        "savedReplyId": 0,
+        "createdByCustomer": false
+      },
+      {
+        "id": 1243856844,
+        "type": "lineitem",
+        "assignedTo": {
+          "id": 1,
+          "firstName": "Willie",
+          "lastName": "Mays",
+          "email": "wmays@example.com",
+          "phone": null,
+          "type": "user",
+          "photoUrl": null
+        },
+        "status": "pending",
+        "createdAt": "2017-11-01T00:54:12Z",
+        "openedAt": null,
+        "createdBy": {
+          "id": 1,
+          "firstName": "Willie",
+          "lastName": "Mays",
+          "email": "wmays@example.com",
+          "phone": null,
+          "type": "user",
+          "photoUrl": null
+        },
+        "source": {
+          "type": "web",
+          "via": "user"
+        },
+        "actionType": null,
+        "actionSourceId": null,
+        "fromMailbox": null,
+        "state": null,
+        "customer": null,
+        "body": null,
+        "to": null,
+        "cc": [],
+        "bcc": [],
+        "attachments": null,
+        "savedReplyId": null,
+        "createdByCustomer": false
+      },
+      {
+        "id": 1244395380,
+        "type": "message",
+        "assignedTo": {
+          "id": 1,
+          "firstName": "Willie",
+          "lastName": "Mays",
+          "email": "wmays@example.com",
+          "phone": null,
+          "type": "user",
+          "photoUrl": null
+        },
+        "status": "active",
+        "createdAt": "2017-10-31T22:27:33Z",
+        "openedAt": null,
+        "createdBy": {
+          "id": 1,
+          "firstName": "Willie",
+          "lastName": "Mays",
+          "email": "wmays@example.com",
+          "phone": null,
+          "type": "user",
+          "photoUrl": null
+        },
+        "source": {
+          "type": "web",
+          "via": "user"
+        },
+        "actionType": "originalCreator",
+        "actionSourceId": 1,
+        "fromMailbox": null,
+        "state": "published",
+        "customer": null,
+        "body": "Hey Barry, Thank you for your questions and the awesome screenshots.",
+        "to": null,
+        "cc": [],
+        "bcc": [],
+        "attachments": null,
+        "attachments": [
+          {
+            "id": 98848150,
+            "mimeType": "image/png",
+            "fileName": "wordpress-logo-simplified-rgb.png",
+            "size": 214155,
+            "width": 1728,
+            "height": 1328,
+            "url": "https://s.w.org/about/images/logos/wordpress-logo-simplified-rgb.png",
+            "hash": "18c19af0a8121280adfa6971a3503305dd0f2145"
+          }
+        ],
+        "savedReplyId": 0,
+        "createdByCustomer": false
+      },
+      {
+        "id": 1243856844,
+        "type": "lineitem",
+        "assignedTo": {
+          "id": 1,
+          "firstName": "Willie",
+          "lastName": "Mays",
+          "email": "wmays@example.com",
+          "phone": null,
+          "type": "user",
+          "photoUrl": null
+        },
+        "status": "nochange",
+        "createdAt": "2017-10-31T16:54:35Z",
+        "openedAt": null,
+        "createdBy": {
+          "id": 1,
+          "firstName": "Willie",
+          "lastName": "Mays",
+          "email": "wmays@example.com",
+          "phone": null,
+          "type": "user",
+          "photoUrl": null
+        },
+        "source": {
+          "type": "web",
+          "via": "user"
+        },
+        "actionType": null,
+        "actionSourceId": null,
+        "fromMailbox": null,
+        "state": null,
+        "customer": null,
+        "body": null,
+        "to": null,
+        "cc": [],
+        "bcc": [],
+        "attachments": null,
+        "savedReplyId": null,
+        "createdByCustomer": false
+      },
+      {
+        "id": 1243855723,
+        "type": "customer",
+        "assignedTo": null,
+        "status": "active",
+        "createdAt": "2017-10-31T16:54:00Z",
+        "openedAt": null,
+        "createdBy": {
+          "id": 2,
+          "firstName": "Barry",
+          "lastName": "White",
+          "email": "barrywhite@gmail.com",
+          "phone": null,
+          "type": "customer",
+          "emails": [
+            "barrywhite@gmail.com"
+          ],
+          "photoUrl": "https://d2ojpxxtu63wzl.cloudfront.net/static/c5db53d0d2ac84c7613eaa587cb90fb0_b71045039e8ca1964597b8aaa80972bf4d6591875bba73da88141f6742ced713",
+          "customerPersonType": true
+        },
+        "source": {
+          "type": "email",
+          "via": "customer"
+        },
+        "actionType": null,
+        "actionSourceId": null,
+        "fromMailbox": null,
+        "state": "published",
+        "customer": null,
+        "body": "This is a support request using Help Scout.",
+        "to": null,
+        "cc": [],
+        "bcc": [],
+        "attachments": [
+          {
+            "id": 98848150,
+            "mimeType": "image/png",
+            "fileName": "Screen Shot 2017-10-31 at 12.50.11 PM.png",
+            "size": 214155,
+            "width": 1728,
+            "height": 1328,
+            "url": "https://secure.helpscout.net/file/98848150/18c19af0a8121280adfa6971a3503305dd0f2145/Screen Shot 2017-10-31 at 12.50.11 PM.png",
+            "hash": "18c19af0a8121280adfa6971a3503305dd0f2145"
+          }
+        ],
+        "savedReplyId": 0,
+        "createdByCustomer": true
+      }
+    ]
+  }
+}

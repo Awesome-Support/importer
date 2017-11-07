@@ -1,0 +1,30 @@
+parameters:
+    git_dir: .
+    bin_dir: vendor/bin
+    tasks:
+      securitychecker:
+      composer:
+      jsonlint:
+      xmllint:
+      yamllint:
+#      phpstan:
+      phplint:
+      phpunit:
+      phpcs:
+      phpcpd:
+        directory: '.'
+        exclude: ['vendor', 'tests', 'src/API/Provider']
+      phpmnd:
+      phpparser:
+        visitors:
+          no_exit_statements: ~
+          never_use_else: ~
+          forbidden_function_calls:
+            blacklist:
+              - "die"
+              - "var_dump"
+              - "exit"
+      phpversion:
+        project: '5.6'
+      phpmd:
+        ruleset: ['phpmd.xml.dist']

@@ -1,0 +1,68 @@
+{
+  "page": 1,
+  "pages": 1,
+  "count": 1,
+  "items": [
+    {
+      "id": 459081143,
+      "type": "email",
+      "folderId": 1659005,
+      "isDraft": false,
+      "number": 1392,
+      "owner": {
+        "id": 223752,
+        "firstName": "Willie",
+        "lastName": "Mays",
+        "email": "wmays@example.com",
+        "phone": null,
+        "type": "user",
+        "photoUrl": null
+      },
+      "mailbox": {
+        "id": 126266,
+        "name": "Awesome Support"
+      },
+      "customer": {
+        "id": 149794167,
+        "firstName": "Mary",
+        "lastName": "Richards",
+        "email": "mrichards@hotmail.com",
+        "phone": null,
+        "type": "customer",
+        "emails": [
+          "mrichards@hotmail.com"
+        ],
+        "photoUrl": "https://secure.gravatar.com/avatar/4e077d102aad837bbcb4cd4a0fe70f24",
+        "customerPersonType": true
+      },
+      "threadCount": 1,
+      "status": "active",
+      "subject": "Testing",
+      "preview": "Testing Help Scout....",
+      "createdBy": {
+        "id": 223752,
+        "firstName": "Willie",
+        "lastName": "Mays",
+        "email": "wmays@example.com",
+        "phone": null,
+        "type": "user",
+        "photoUrl": null
+      },
+      "createdAt": "2017-10-31T22:48:50Z",
+      "userModifiedAt": "2017-10-31T22:48:50Z",
+      "closedAt": null,
+      "closedBy": null,
+      "source": {
+        "type": "web",
+        "via": "user"
+      },
+      "createdByType": "user",
+      "cc": null,
+      "bcc": null,
+      "tags": [],
+      "draft": false,
+      "locked": false,
+      "spam": false
+    }
+  ]
+}
