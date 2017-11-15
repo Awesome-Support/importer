@@ -2,6 +2,7 @@
 
 namespace Pressware\AwesomeSupport\Importer;
 
+use PharIo\Manifest\Email;
 use Pressware\AwesomeSupport\Entity\Ticket;
 use Pressware\AwesomeSupport\Entity\User;
 use Pressware\AwesomeSupport\Importer\Exception\ImporterException;
@@ -37,6 +38,11 @@ class Importer implements ImporterInterface
     protected $inserter;
 
     /**
+     * @var EmailSubscriber
+     */
+    protected $emailSubscriber;
+
+    /**
      * @var int
      */
     protected $numberTickets = 0;
@@ -63,18 +69,21 @@ class Importer implements ImporterInterface
      * @param Locator $locator
      * @param Validator $validator
      * @param Inserter $inserter
+     * @param EmailSubscriber $emailSubscriber
      */
     public function __construct(
         NotificationInterface $notifier,
         Locator $locator,
         Validator $validator,
-        Inserter $inserter
+        Inserter $inserter,
+        EmailSubscriber $emailSubscriber
     ) {
-        $this->notifier    = $notifier;
-        $this->locator     = $locator;
-        $this->validator   = $validator;
-        $this->inserter    = $inserter;
-        $this->currentUser = wp_get_current_user();
+        $this->notifier        = $notifier;
+        $this->locator         = $locator;
+        $this->validator       = $validator;
+        $this->inserter        = $inserter;
+        $this->emailSubscriber = $emailSubscriber;
+        $this->currentUser     = wp_get_current_user();
     }
 
     /**
@@ -102,7 +111,22 @@ class Importer implements ImporterInterface
      *
      * @return boolean
      */
-    public function importTickets(array $tickets)
+    public function import(array $tickets)
+    {
+        $this->emailSubscriber->disable();
+        return $this->importTickets($tickets);
+    }
+
+    /**
+     * Imports the supplied tickets into the database.
+     *
+     * @since 0.1.0
+     *
+     * @param array $tickets
+     *
+     * @return boolean
+     */
+    protected function importTickets(array $tickets)
     {
         foreach ($tickets as $ticket) {
             $ticketId = $this->processTicket($ticket);
@@ -141,7 +165,7 @@ class Importer implements ImporterInterface
      * skip inserting/updating and return the ticket ID.  Else, insert the
      * ticket into the database.
      *
-     * @since 0.1.0
+     * @since 0.2.0
      *
      * @param Ticket $ticket
      *
@@ -172,6 +196,8 @@ class Importer implements ImporterInterface
             $ticket->getSource()
         );
 
+        $this->inserter->setHelpDeskTicketId($ticketId, $ticket->getHelpDeskId());
+
         $this->numberTickets++;
         $this->processAttachments($ticket->getAttachments(), $ticketId);
         return $ticketId;
@@ -193,7 +219,7 @@ class Importer implements ImporterInterface
             return;
         }
 
-        foreach ((array)$ticket->getReplies() as $reply) {
+        foreach ((array)$ticket->getReplies() as $helpDeskId => $reply) {
             if (empty($reply)) {
                 continue;
             }
@@ -204,21 +230,22 @@ class Importer implements ImporterInterface
                 continue;
             }
 
-            $this->processReply($reply, $ticketId);
+            $this->processReply($reply, $ticketId, $helpDeskId);
         }
     }
 
     /**
      * Process this reply.
      *
-     * @since 0.1.0
+     * @since 0.2.0
      *
      * @param array $reply
      * @param int $ticketId
+     * @param string|int $helpDeskReplyId
      *
      * @return void
      */
-    protected function processReply(array $reply, $ticketId)
+    protected function processReply(array $reply, $ticketId, $helpDeskReplyId)
     {
         $author = $this->processUser($reply['user']);
 
@@ -229,6 +256,8 @@ class Importer implements ImporterInterface
             $reply['date'],
             $reply['read']
         );
+
+        $this->inserter->setHelpDeskReplyId($replyId, $helpDeskReplyId);
 
         // Whoops, not valid. Skip it.
         if (!$this->validator->isValidReplyId($replyId)) {
@@ -327,7 +356,7 @@ class Importer implements ImporterInterface
     /**
      * Compile the stats for this import process.
      *
-     * @since 0.1.0
+     * @since 0.2.0
      *
      * @param int $ticketsReceived
      *
@@ -343,13 +372,19 @@ class Importer implements ImporterInterface
 
         $message = '';
         if (!$stats['ticketsReceived']) {
-            $message = __('All done. No tickets were imported, as the Help Desk indicated there are no tickets' .
-                ' available for your request.', 'awesome-support-importer');
+            // @codingStandardsIgnoreStart
+            $message = __(
+                'All done. No tickets were imported, as the Help Desk indicated there are no tickets available for your request.',
+                'awesome-support-importer'
+            );
+            // @codingStandardsIgnoreEnd
         }
 
         if (!$message && !$stats['ticketsImported'] && !$stats['repliesImported']) {
-            $message = __('All done. No additional tickets were imported, as all these tickets'
-                . ' were already in the database.', 'awesome-support-importer');
+            $message = __(
+                'All done. No additional tickets were imported, as all these tickets were already in the database.',
+                'awesome-support-importer'
+            );
         }
 
         if (!$message) {

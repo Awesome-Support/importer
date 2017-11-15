@@ -11,7 +11,7 @@ class DataMapper extends AbstractDataMapper
     /**
      * Maps the incoming JSON to the individual repositories.
      *
-     * @since 0.1.0
+     * @since 0.1.2
      *
      * @param string $json
      * @param string $key (Optional)
@@ -59,7 +59,6 @@ class DataMapper extends AbstractDataMapper
             );
 
             $ticketComments = (array)$ticket->ticket_comments;
-            $this->mapTicketAttachments($ticketId, $ticketComments);
             $this->mapOriginalTicket($ticketId, $ticketComments);
             if (!empty($ticketComments)) {
                 $this->mapReplies($ticketId, $ticketComments);
@@ -68,23 +67,23 @@ class DataMapper extends AbstractDataMapper
     }
 
     /**
-     * If there are attachments, map them to the Ticket Repository.
-     * It also removes the attachments from the $ticketComments array.
+     * If there are attachments, map them to the appropriate repository.
      *
-     * @since 0.1.0
+     * @since 0.1.2
      *
-     * @param int $ticketId
-     * @param array $ticketComments
+     * @param int $ticketId Ticket ID
+     * @param \stdClass $comment The ticket/reply's comment object
+     * @param int $replyId (Optional) Reply ID, when it's a reply
      *
      * @return void
      */
-    protected function mapTicketAttachments($ticketId, array &$ticketComments)
+    protected function mapCommentAttachments($ticketId, \stdClass $comment, $replyId = 0)
     {
-        if (!array_key_exists('attachments', $ticketComments)) {
+        if (!property_exists($comment, 'attachments') && $comment->attachments) {
             return;
         }
 
-        $this->mapAttachments((array)array_pull($ticketComments, 'attachments'), $ticketId);
+        $this->mapAttachments((array)$comment->attachments, $ticketId, $replyId);
     }
 
     /**
@@ -111,7 +110,7 @@ class DataMapper extends AbstractDataMapper
     /**
      * Map the original ticket.
      *
-     * @since 0.1.0
+     * @since 0.1.2
      *
      * @param int $ticketId
      * @param array $ticketComments
@@ -135,7 +134,7 @@ class DataMapper extends AbstractDataMapper
         // Store the original ticket's comment
         $this->ticketRepository->set("{$ticketId}.customerID", (int)$originalTicket->user_id);
         $this->ticketRepository->setDescription($ticketId, html_entity_decode($originalTicket->comment));
-
+        $this->mapCommentAttachments($ticketId, $originalTicket);
 
         if (empty($ticketComments)) {
             return;
@@ -150,7 +149,7 @@ class DataMapper extends AbstractDataMapper
     /**
      * Map the replies.
      *
-     * @since 0.1.0
+     * @since 0.2.0
      *
      * @param int $ticketId
      * @param array $ticketComments
@@ -175,12 +174,13 @@ class DataMapper extends AbstractDataMapper
                 $ticketId,
                 $item->comment_id,
                 [
-                    'replyId'   => $item->comment_id,
                     'userId'    => $item->user_id,
                     'reply'     => html_entity_decode($item->comment),
                     'timestamp' => $item->time_stamp,
                 ]
             );
+
+            $this->mapCommentAttachments($ticketId, $item, $item->comment_id);
         }
     }
 }

@@ -5,6 +5,15 @@ namespace Pressware\AwesomeSupport\Entity;
 class Ticket
 {
     /**
+     * The original ID from the Help Desk SaaS provider.
+     *
+     * @since 0.2.0
+     *
+     * @var string|int
+     */
+    private $helpDeskId;
+
+    /**
      * @var User
      */
     private $agent;
@@ -52,6 +61,9 @@ class Ticket
     /**
      * Ticket constructor.
      *
+     * @since 0.2.0
+     *
+     * @param string|int $helpDeskId Help Desk provider's ticket ID.
      * @param User|null $agent New tickets may not have an agent assigned to them.
      * @param User|null $customer
      * @param $source
@@ -62,6 +74,7 @@ class Ticket
      * @param $history
      */
     public function __construct(
+        $helpDeskId,
         $agent,
         $customer,
         $source,
@@ -71,6 +84,7 @@ class Ticket
         array $replies = null,
         array $history = null
     ) {
+        $this->helpDeskId  = $helpDeskId;
         $this->agent       = $agent;
         $this->customer    = $customer;
         $this->source      = $source;
@@ -80,6 +94,18 @@ class Ticket
         $this->replies     = $replies;
         $this->history     = $history;
         // TODO: Tags, Custom Fields, Multiple Agents
+    }
+
+    /**
+     * Get the Help Desk provider's original ticket ID.
+     *
+     * @since 0.2.0
+     *
+     * @return string|int
+     */
+    public function getHelpDeskId()
+    {
+        return $this->helpDeskId;
     }
 
     /**

@@ -2,15 +2,9 @@
 
 namespace Pressware\AwesomeSupport;
 
-use Pressware\AwesomeSupport\API\ApiManager;
-use Pressware\AwesomeSupport\Importer\ServiceProvider as ImporterServiceProvider;
-use Pressware\AwesomeSupport\Notifications\Contracts\NotificationInterface;
 use Pressware\AwesomeSupport\PluginAPI\Manager;
 use Pressware\AwesomeSupport\PluginAPI\PluginApiInterface;
-use Pressware\AwesomeSupport\Subscriber\MenuSubscriber;
-use Pressware\AwesomeSupport\Subscriber\ScriptAssetSubscriber;
-use Pressware\AwesomeSupport\Subscriber\SerializationSubscriber;
-use Pressware\AwesomeSupport\Subscriber\StyleAssetSubscriber;
+use Pressware\AwesomeSupport\Subscriber\ServiceProviderInterface;
 use Pressware\AwesomeSupport\Subscriber\TicketImportSubscriber;
 
 class Plugin
@@ -55,21 +49,26 @@ class Plugin
      */
     protected $config;
 
-    protected $notifier;
+    /**
+     * @var ServiceProviderInterface
+     */
+    protected $subscribers;
 
     /**
-     * Abstract_Plugin constructor.
+     * Plugin constructor.
+     *
+     * @since 0.1.1
      *
      * @param string $file file path used to determine plugin path and plugin url.
      * @param array $config Array of runtime configuration parameters.
-     * @param NotificationInterface $notifier Error and log handler
+     * @param ServiceProviderInterface $subscribers Handles creating and fetching all subscribers
      * @param PluginApiInterface $pluginManager
      * @param OptionInterface $optionsManager
      */
     public function __construct(
         $file,
         array $config,
-        NotificationInterface $notifier,
+        ServiceProviderInterface $subscribers,
         PluginApiInterface $pluginManager,
         OptionInterface $optionsManager
     ) {
@@ -83,14 +82,16 @@ class Plugin
         $this->config['redirectUri'] = home_url($this->config['redirectUri'], 'https');
 
         $this->pluginApiManager = $pluginManager;
-        $this->notifier         = $notifier;
+        $this->subscribers      = $subscribers;
         $this->options          = $optionsManager;
     }
 
     /**
      * Checks if the plugin is loaded.
      *
-     * @return bool TODO
+     * @since 0.1.0
+     *
+     * @return bool
      */
     public function isLoaded()
     {
@@ -98,7 +99,11 @@ class Plugin
     }
 
     /**
-     * @return bool TODO
+     * Load the plugin and register subscribers.
+     *
+     * @since 0.2.0
+     *
+     * @return bool
      */
     public function load()
     {
@@ -106,17 +111,11 @@ class Plugin
             return false;
         }
 
-        // Turn on the notifier.
-        $this->notifier->startListeningForErrors();
-
         foreach ($this->getSubscribers() as $subscriber) {
             $this->pluginApiManager->register($subscriber);
-
-            // Call when form post-back option is enabled for importing.
-            if ($this->config['importViaPostback'] && $subscriber instanceof TicketImportSubscriber) {
-                $this->pluginApiManager->addHook('init', [$subscriber, 'importTicketsByApi'], 20);
-            }
         }
+
+        $this->addCustomFields();
 
         $this->loaded = true;
 
@@ -124,53 +123,34 @@ class Plugin
     }
 
     /**
+     * Get the subscribers.
+     *
+     * @since 0.1.1
+     *
      * @return array
      */
     public function getSubscribers()
     {
-        $apiManager        = new ApiManager($this->config, $this->notifier);
-        $mailboxSubscriber = $apiManager->createHelpScoutMailboxSubscriber();
-
-        return [
-            $mailboxSubscriber,
-            new MenuSubscriber($this->config, $mailboxSubscriber),
-            $this->createScriptsSubscriber(),
-            $this->createStylesSubscriber(),
-            new TicketImportSubscriber(
-                $this->config,
-                $apiManager,
-                (new ImporterServiceProvider)->create($this->notifier),
-                $this->notifier
-            ),
-            new SerializationSubscriber($this->config),
-        ];
+        return $this->subscribers->get($this->config);
     }
 
     /**
-     * Create the Scripts Subscriber.
+     * Add a new custom field for the ticket display in Awesome Support.
      *
-     * @since 0.0.1
+     * @since 0.2.0
      *
-     * @return ScriptAssetSubscriber
+     * @return void
      */
-    protected function createScriptsSubscriber()
+    protected function addCustomFields()
     {
-        $config              = require $this->pluginPath . 'config/scripts.php';
-        $config['pluginUrl'] = $this->pluginUrl;
-        return new ScriptAssetSubscriber($config);
-    }
+        if (!function_exists('wpas_add_custom_field')) {
+            return;
+        }
 
-    /**
-     * Create the Scripts Subscriber.
-     *
-     * @since 0.0.1
-     *
-     * @return StyleAssetSubscriber
-     */
-    protected function createStylesSubscriber()
-    {
-        $config              = require $this->pluginPath . 'config/styles.php';
-        $config['pluginUrl'] = $this->pluginUrl;
-        return new StyleAssetSubscriber($config);
+        // Note: Awesome Support automatically adds a `_wpas_` prefix to this custom field name.
+        wpas_add_custom_field('help_desk_ticket_id', [
+            'title'        => __('Help Desk SaaS Ticket ID', 'awesome-support-importer'),
+            'backend_only' => true,
+        ]);
     }
 }

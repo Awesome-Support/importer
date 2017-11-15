@@ -3,7 +3,6 @@
 $optionsPrefix = 'awesome-support-importer-';
 
 return [
-    'importViaPostback' => false,
     'pluginPath'        => '',
     'pluginUrl'         => '',
     'optionsPrefix'     => $optionsPrefix,
@@ -21,7 +20,7 @@ return [
         $optionsPrefix . 'date-start'    => '',
         $optionsPrefix . 'date-end'      => '',
     ],
-    //
+    'screenName'        => 'awesome_support_import_tickets',
     'redirectUri'       => 'wp-admin/edit.php?post_type=ticket&page=awesome_support_import_tickets',
     'security'          => [
         'action' => $optionsPrefix . 'save',

@@ -6,6 +6,7 @@ use Exception;
 use ErrorException;
 use Pressware\AwesomeSupport\Notifications\Contracts\ExceptionHandlerInterface;
 use Pressware\AwesomeSupport\Notifications\Exceptions\ExceptionThrowableInterface;
+use Pressware\AwesomeSupport\Notifications\Exceptions\ThrowableException;
 use Symfony\Component\Debug\Exception\FatalErrorException;
 use Symfony\Component\Debug\Exception\FatalThrowableError;
 
@@ -102,17 +103,25 @@ class ExceptionHandler implements ExceptionHandlerInterface
      * the HTTP and Console kernels. But, fatal error exceptions must
      * be handled differently since they are not normal exceptions.
      *
+     * @since 0.1.1
+     *
      * @param Throwable|Exception $error
      *
      * @return void
-     * @throws
+     * @throws \ErrorException
      */
     public function handleException($error)
     {
         $this->fireListeners($error);
 
         if (!$error instanceof Exception) {
-            $error = new FatalThrowableError($error);
+            $error = new \ErrorException(
+                $error->getMessage(),
+                $error->getCode(),
+                E_ERROR,
+                $error->getFile(),
+                $error->getLine()
+            );
         }
 
         $this->fireThrow($error);
@@ -121,13 +130,15 @@ class ExceptionHandler implements ExceptionHandlerInterface
     /**
      * Handle the PHP shutdown event.
      *
+     * @since 0.1.1
+     *
      * @return void
      */
     public function handleShutdown()
     {
         $error = error_get_last();
         if ($error && $this->isFatal($error['type'])) {
-            $this->handleException($this->fatalExceptionFromError($error, 0));
+            $this->handleException($this->fatalExceptionFromError($error));
         }
     }
 
@@ -243,19 +254,19 @@ class ExceptionHandler implements ExceptionHandlerInterface
     /**
      * Create a new fatal exception instance from an error array.
      *
+     * @since 0.1.1
+     *
      * @param  array $error
-     * @param  int|null $traceOffset
-     * @return \Symfony\Component\Debug\Exception\FatalErrorException
+     * @return \ErrorException
      */
-    protected function fatalExceptionFromError(array $error, $traceOffset = null)
+    protected function fatalExceptionFromError(array $error)
     {
-        return new FatalErrorException(
+        return new \ErrorException(
             $error['message'],
             $error['type'],
             0,
             $error['file'],
-            $error['line'],
-            $traceOffset
+            $error['line']
         );
     }
 

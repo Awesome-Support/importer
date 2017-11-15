@@ -39,7 +39,7 @@ class RateLimitTest extends TestCase
                 'endDate'     => '',
                 'moduleName'  => __CLASS__,
             ],
-            (array)require TESTS_CONFIG_DIR . 'ticksy.php'
+            (array)require TICKSY_CONFIG_FILE
         );
         $this->notifier = new NotifierStub();
     }

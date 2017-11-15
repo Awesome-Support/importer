@@ -39,7 +39,7 @@ class RateLimitTest extends TestCase
                 'endDate'     => '',
                 'moduleName'  => __CLASS__,
             ],
-            (array)require TESTS_CONFIG_DIR . 'zendesk.php'
+            (array)require ZENDESK_CONFIG_FILE
         );
         $this->notifier = new NotifierStub();
     }

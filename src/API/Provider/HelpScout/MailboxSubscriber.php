@@ -61,13 +61,15 @@ class MailboxSubscriber extends AbstractSubscriber
     /**
      * Get the mailboxes via Ajax.
      *
-     * @since 0.1.0
+     * @since 0.2.0
      *
      * @return void
      */
     public function getViaAjax()
     {
         wp_verify_nonce($this->security['name'], $_POST['security']);
+
+        $this->notifier->startListeningForErrors();
 
         $data = $this->getAjaxData();
         if (!$data[$this->optionsPrefix . 'api-token']) {

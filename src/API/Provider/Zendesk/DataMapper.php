@@ -126,7 +126,7 @@ class DataMapper extends AbstractDataMapper
      *
      * See the link for the details.
      *
-     * @since 0.1.0
+     * @since 0.2.0
      *
      * @param \stdClass $event
      * @param array $data Array of arguments
@@ -140,7 +140,6 @@ class DataMapper extends AbstractDataMapper
 
             $data['replyId'] = $event->id;
             $data['reply']   = [
-                'replyId'   => $event->id,
                 'userId'    => $event->author_id,
                 'reply'     => $event->body,
                 'timestamp' => $data['date'],

@@ -198,9 +198,9 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. ' .
                 'timestamp'   => '2017-10-16 01:27:36',
                 'read'        => false,
                 'attachments' => [],
-                'replyId'     => 134854884054,
             ],
         ];
+
         $this->assertSame($expected, $this->replyRepository->get(656));
     }
 

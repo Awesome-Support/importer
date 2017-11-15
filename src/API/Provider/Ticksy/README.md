@@ -43,4 +43,4 @@ This limitation makes this API run a little slower.
 
 ## Known Issues
 
-1. Ticksy groups all of the attachments for the ticket without providing a binding to the ticket or reply.  Therefore, we are unable to attach the attachment to its reply.  Rather, all attachments are bound to the original ticket.
+None.

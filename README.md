@@ -1,6 +1,4 @@
-# Awesome Support Importer Plugin
-
-[![CircleCI](https://circleci.com/gh/pressware/awesome-support-importer/tree/master.svg?style=svg&circle-token=aa59de0620370984a285143461e9d51cfc7713e4)](https://circleci.com/gh/pressware/awesome-support-importer/tree/master)
+# Awesome Support: Importer
 
 The Awesome Support Importer is a WordPress and Awesome Support plugin.  It provides the ability to import existing tickets from various Help Desk Providers into your [Awesome Support Help Desk](https://awesomesupport.com/).  
 

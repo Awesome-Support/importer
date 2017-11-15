@@ -12,12 +12,19 @@
         </div>
     <?php endif; ?>
 
+    <div class="notice notice-success is-dismissible">
+        <p><?php
+            _e(
+                'Please disable all Awesome Support Add-ons to avoid any conflicts during the import process.',
+                'awesome-support-importer'
+            );
+            ?></p>
+    </div>
+
     <p><?php
-        _e(
-            '* means the field is required in order to import the tickets.  ' .
-            'When all required fields are filled out, then the "Import Tickets" button will be available to you.',
-            'awesome-support-importer'
-        );
+        // @codingStandardsIgnoreStart
+        _e('* means the field is required in order to import the tickets.  When all required fields are filled out, then the "Import Tickets" button will be available to you.', 'awesome-support-importer');
+        // @codingStandardsIgnoreEnd
         ?></p>
 
     <form action="" method="post" name="awesome-support-importer">
@@ -52,7 +59,11 @@
                        data-forapi="zendesk, ticksy"
                        readonly/>*
                 <span class="description">
-                    <?php _e("Enter your subdomain for selected Help Desk Provider.", 'awesome-support-importer'); ?>
+                    <?php
+                    // @codingStandardsIgnoreStart
+                    _e('Enter your "subdomain" for selected Help Desk Provider. Only include the subdomain and not the entire URL.', 'awesome-support-importer');
+                    // @codingStandardsIgnoreEnd
+                    ?>
                 </span>
             </p>
             <div class="awesome-support-importer-invalid-subdomain awesome-support-importer-message is-error"
@@ -82,11 +93,9 @@
 
         <div class="helpscout-section" data-helpscout="1">
             <p><?php
-                _e(
-                    'Help Scout requires that you select a mailbox from which you want to import the tickets. ' .
-                    'Follow these steps:',
-                    'awesome-support-importer'
-                );
+                // @codingStandardsIgnoreStart
+                _e('Help Scout requires that you select a mailbox from which you want to import the tickets. Follow these steps:', 'awesome-support-importer');
+                // @codingStandardsIgnoreEnd
                 ?></p>
             <ol>
                 <li><?php _e('Enter the API Token first.', 'awesome-support-importer'); ?></li>
@@ -154,11 +163,9 @@
             <?php if ($this->hasError()) : ?>
                 <div class="awesome-support-importer-message is-error">
                     <p><?php
-                        _e(
-                            'An error occurred getting the mailboxes from Help Scout. Please recheck the API Token ' .
-                            'and then try again.',
-                            'awesome-support-importer'
-                        );
+                        // @codingStandardsIgnoreStart
+                        _e('An error occurred getting the mailboxes from Help Scout. Please recheck the API Token and then try again.', 'awesome-support-importer');
+                        // @codingStandardsIgnoreEnd
                         ?></p>
                 </div>
             <?php endif; ?>
@@ -205,18 +212,6 @@
                 <?php _e('Import Tickets', 'awesome-support-importer'); ?>
             </button>
         </p>
-
-        <?php if ($this->importViaPostback) : ?>
-            <!-- This section is for debug purposes to bypass the Ajax. -->
-            <div class="awesome-support-importer-testing-option">
-                <p>This button is for debugging the API. It posts back to the web server instead of using Ajax.</p>
-                <p class="option">
-                    <button name="import-tickets-action" class="button button-secondary">
-                        <?php _e('Import Tickets by Post Back', 'awesome-support-importer'); ?>
-                    </button>
-                </p>
-            </div>
-        <?php endif; ?>
 
         <?php wp_nonce_field($this->security['action'], $this->security['name']); ?>
     </form>

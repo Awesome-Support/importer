@@ -22,5 +22,5 @@ interface ImporterInterface
      *
      * @return boolean
      */
-    public function importTickets(array $tickets);
+    public function import(array $tickets);
 }

@@ -1,16 +1,16 @@
 <?php
 /**
- * @package   Awesome Support Importer
+ * @package   Awesome Support: Importer
  * @author    Pressware, LLC <support@pressware.co>
  * @license   GPL-2.0+
  * @link      https://pressware.co
  * @copyright 2017 Pressware, LLC
  *
  * @wordpress-plugin
- * Plugin Name:       Awesome Support Importer
+ * Plugin Name:       Awesome Support: Importer
  * Plugin URI:        TODO: URL to the final build.
  * Description:       Allows users to import tickets from a variety of help desks into Awesome Support.
- * Version:           0.1.0
+ * Version:           0.1.1
  * Author:            Pressware, LLC
  * Author URI:        https://pressware.co
  * Text Domain:       awesome-support-importer
@@ -23,6 +23,7 @@ namespace Pressware\AwesomeSupport;
 
 use Pressware\AwesomeSupport\Notifications\NotifierServiceProvider;
 use Pressware\AwesomeSupport\PluginAPI\Manager;
+use Pressware\AwesomeSupport\Subscriber\ServiceProvider as SubscriberServiceProvider;
 
 require_once 'vendor/autoload.php';
 
@@ -32,7 +33,9 @@ $loggerConfig['rootPath'] = __DIR__;
 $plugin = new Plugin(
     __FILE__,
     (array)require __DIR__ . '/config/plugin.php',
-    (new NotifierServiceProvider())->create($loggerConfig),
+    new SubscriberServiceProvider(
+        (new NotifierServiceProvider())->create($loggerConfig)
+    ),
     new Manager(),
     new Options('awesome_support')
 );

@@ -25,13 +25,6 @@ class TicketImportSubscriber extends AbstractSubscriber
     protected $initiatedViaAjax;
 
     /**
-     * When true, button appears for importing via form post back instead of Ajax.
-     *
-     * @var bool
-     */
-    protected $importViaPostback;
-
-    /**
      * Error and log handler.
      *
      * @var NotificationInterface
@@ -64,11 +57,10 @@ class TicketImportSubscriber extends AbstractSubscriber
         ImporterInterface $importer,
         NotificationInterface $notifier
     ) {
-        $this->selectedAPI       = 'default';
-        $this->importViaPostback = $config['importViaPostback'];
-        $this->apiManager        = $apiManager;
-        $this->importer          = $importer;
-        $this->notifier          = $notifier;
+        $this->selectedAPI = 'default';
+        $this->apiManager  = $apiManager;
+        $this->importer    = $importer;
+        $this->notifier    = $notifier;
         parent::__construct($config);
     }
 
@@ -78,21 +70,33 @@ class TicketImportSubscriber extends AbstractSubscriber
     public static function getHooks()
     {
         return [
-            'wp_ajax_importTicketsByApi'    => 'importTicketsByApi',
+            'wp_ajax_importTicketsByApi' => 'importTicketsByApi',
         ];
     }
 
+    /**
+     * Import the tickets. Ajax callback.
+     *
+     * @since 0.2.0
+     *
+     * @return string
+     */
     public function importTicketsByApi()
     {
-        if (!$this->okayToImport()) {
-            return;
-        }
+        wp_verify_nonce($this->security['name'], $_POST['security']);
 
+        // Turn on the notifier to listen for any errors.
+        $this->notifier->startListeningForErrors();
+
+        // Get the tickets from the selected Help Desk Provider.
         $this->setSelectedApi();
         $api     = $this->apiManager->getApi($this->selectedAPI, $this->getData());
         $tickets = $api->getTickets();
 
-        $importStats = $this->importer->clear()->importTickets($tickets);
+        // Import the tickets.
+        $importStats = $this->importer->clear()->import($tickets);
+
+        // Render the results and send it back to the browser.
         $this->render($importStats);
         wp_die();
     }
@@ -119,25 +123,6 @@ class TicketImportSubscriber extends AbstractSubscriber
             : 'views/importer-no-tickets.php';
 
         require $this->pluginPath . $viewFile;
-    }
-
-    protected function okayToImport()
-    {
-        if (!$this->importViaPostback) {
-            wp_verify_nonce($this->security['name'], $_POST['security']);
-            return (defined('DOING_AJAX') && DOING_AJAX);
-        }
-
-        /**
-         * Processing via Form Post-back. Used for setup and testing.
-         */
-        // Are we on the right page?
-        if (!array_key_exists('page', $_GET) ||
-            $_GET['page'] !== 'awesome_support_import_tickets') {
-            return false;
-        }
-        wp_verify_nonce($this->security['name'], $this->security['action']);
-        return array_key_exists('import-tickets-action', $_POST);
     }
 
     protected function setSelectedApi()

@@ -155,12 +155,12 @@ class DataMapperTest extends TestCase
         $dataMapper->mapJSON($this->getJson('conversation.json'));
         $expected = 1;
         $this->assertCount($expected, $this->ticketRepository->getAll());
-        $this->assertTrue($this->ticketRepository->has('458887447'));
-        $this->assertTrue($this->ticketRepository->has(458887447));
+        $this->assertTrue($this->ticketRepository->has('1391'));
+        $this->assertTrue($this->ticketRepository->has(1391));
 
         $encodedFile = urlencode('Screen Shot 2017-10-31 at 12.50.11 PM.png');
         $expected    = [
-            'ticketId'    => 458887447,
+            'ticketId'    => 1391,
             'agentID'     => 1,
             'customerID'  => 2,
             'subject'     => 'Foo Ticket',
@@ -175,7 +175,7 @@ class DataMapperTest extends TestCase
             'createdAt'   => '2017-10-31T16:54:00Z',
             'updatedAt'   => '2017-11-01T23:10:55Z',
         ];
-        $this->assertSame($expected, $this->ticketRepository->get(458887447));
+        $this->assertSame($expected, $this->ticketRepository->get(1391));
     }
 
     public function testReplies()
@@ -184,20 +184,20 @@ class DataMapperTest extends TestCase
         $dataMapper->mapJSON($this->getJson('conversation.json'));
         $expected = 1;
         $this->assertEquals($expected, $this->replyRepository->count());
-        $this->assertTrue($this->replyRepository->has('458887447'));
-        $this->assertTrue($this->replyRepository->has(458887447));
+        $this->assertTrue($this->replyRepository->has('1391'));
+        $this->assertTrue($this->replyRepository->has(1391));
 
         $expected = 2;
-        $this->assertCount($expected, $this->replyRepository->get(458887447));
+        $this->assertCount($expected, $this->replyRepository->get(1391));
 
-        $this->assertArrayHasKey('1244395380', $this->replyRepository->get(458887447));
+        $this->assertArrayHasKey('1244395380', $this->replyRepository->get(1391));
 
-        $this->assertArrayHasKey('userId', $this->replyRepository->get("458887447.1244395380"));
-        $this->assertArrayHasKey('reply', $this->replyRepository->get("458887447.1244395380"));
-        $this->assertArrayHasKey('timestamp', $this->replyRepository->get("458887447.1244395380"));
+        $this->assertArrayHasKey('userId', $this->replyRepository->get("1391.1244395380"));
+        $this->assertArrayHasKey('reply', $this->replyRepository->get("1391.1244395380"));
+        $this->assertArrayHasKey('timestamp', $this->replyRepository->get("1391.1244395380"));
 
         $expected = [
-            'ticketId'    => 458887447,
+            'ticketId'    => 1391,
             'userId'      => 1,
             'reply'       => 'Hey Barry, Thank you for your questions and the awesome screenshots.',
             'timestamp'   => '2017-10-31T22:27:33Z',
@@ -208,9 +208,8 @@ class DataMapperTest extends TestCase
                     'filename' => 'wordpress-logo-simplified-rgb.png',
                 ],
             ],
-            'replyId'     => 1244395380,
         ];
-        $this->assertSame($expected, $this->replyRepository->get("458887447.1244395380"));
+        $this->assertSame($expected, $this->replyRepository->get("1391.1244395380"));
     }
 
     /**********************
@@ -224,8 +223,8 @@ class DataMapperTest extends TestCase
         $tickets  = $dataMapper->assemble();
         $expected = 1;
         $this->assertCount($expected, $tickets);
-        $this->arrayHasKey(458887447, $tickets);
-        $this->assertInstanceOf(Ticket::class, $tickets[458887447]);
+        $this->arrayHasKey(1391, $tickets);
+        $this->assertInstanceOf(Ticket::class, $tickets[1391]);
     }
 
     public function testAssembledTicket()
@@ -234,7 +233,7 @@ class DataMapperTest extends TestCase
         $dataMapper->mapJSON($this->getJson('conversation.json'));
         $tickets = $dataMapper->assemble();
 
-        $ticket = $tickets[458887447];
+        $ticket = $tickets[1391];
         $this->assertSame(
             'Foo Ticket',
             $ticket->getSubject()
@@ -251,7 +250,7 @@ class DataMapperTest extends TestCase
         $dataMapper = $this->createDataMapper();
         $dataMapper->mapJSON($this->getJson('conversation.json'));
         $tickets = $dataMapper->assemble();
-        $ticket  = $tickets[458887447];
+        $ticket  = $tickets[1391];
 
         $this->assertNotNull($ticket->getAgent());
         $this->assertNotNull($ticket->getCustomer());
@@ -266,9 +265,9 @@ class DataMapperTest extends TestCase
         $dataMapper = $this->createDataMapper();
         $dataMapper->mapJSON($this->getJson('conversation.json'));
 
-        $tickets = $dataMapper->assemble();
+        $tickets  = $dataMapper->assemble();
         $expected = 1;
-        $this->assertCount($expected, ($tickets[458887447])->getAttachments());
+        $this->assertCount($expected, ($tickets[1391])->getAttachments());
         $encodedFile = urlencode('Screen Shot 2017-10-31 at 12.50.11 PM.png');
         $this->assertSame(
             [
@@ -278,14 +277,14 @@ class DataMapperTest extends TestCase
                     'filename' => $encodedFile,
                 ],
             ],
-            ($tickets[458887447])->getAttachments()
+            ($tickets[1391])->getAttachments()
         );
 
 
-        $replies = ($tickets[458887447])->getReplies();
+        $replies = ($tickets[1391])->getReplies();
 
         $expected = 1;
-        $this->assertCount($expected, $replies[1]['attachments']);
+        $this->assertCount($expected, $replies[1244395380]['attachments']);
         $this->assertSame(
             [
                 [
@@ -293,7 +292,7 @@ class DataMapperTest extends TestCase
                     'filename' => 'wordpress-logo-simplified-rgb.png',
                 ],
             ],
-            $replies[1]['attachments']
+            $replies[1244395380]['attachments']
         );
     }
 
@@ -303,34 +302,41 @@ class DataMapperTest extends TestCase
         $dataMapper->mapJSON($this->getJson('conversation.json'));
 
         $tickets = $dataMapper->assemble();
-        $replies = ($tickets[458887447])->getReplies();
+        $replies = ($tickets[1391])->getReplies();
 
         $expected = 2;
         $this->assertCount($expected, $replies);
 
-        // 1st reply
-        $reply = $replies[1];
-        $this->assertSame('Hey Barry, Thank you for your questions and the awesome screenshots.', $reply['reply']);
-        $this->assertSame('2017-10-31T22:27:33Z', $reply['date']);
-        $this->assertSame(
-            [
-                [
-                    'url'      => 'https://s.w.org/about/images/logos/wordpress-logo-simplified-rgb.png',
-                    'filename' => 'wordpress-logo-simplified-rgb.png',
-                ],
+        $expectedData = [
+            '1244439717' => [
+                'reply'         => 'Yo Barry, Ignore this one. Just playing around.....',
+                'date'          => '2017-10-31T23:10:55Z',
+                'attachments'   => [],
+                'userFirstName' => 'Willie',
+                'userEmail'     => 'wmays@example.com',
             ],
-            $reply['attachments']
-        );
-        $this->assertInstanceOf(User::class, $reply['user']);
-        $this->assertSame('Willie', ($reply['user'])->getFirstName());
+            '1244395380' => [
+                'reply'         => 'Hey Barry, Thank you for your questions and the awesome screenshots.',
+                'date'          => '2017-10-31T22:27:33Z',
+                'attachments'   => [
+                    [
+                        'url'      => 'https://s.w.org/about/images/logos/wordpress-logo-simplified-rgb.png',
+                        'filename' => 'wordpress-logo-simplified-rgb.png',
+                    ],
+                ],
+                'userFirstName' => 'Willie',
+                'userEmail'     => 'wmays@example.com',
+            ],
+        ];
 
-        // 2nd reply
-        $reply = $replies[0];
-        $this->assertSame('Yo Barry, Ignore this one. Just playing around.....', $reply['reply']);
-        $this->assertSame('2017-10-31T23:10:55Z', $reply['date']);
-        $this->assertEmpty($reply['attachments']);
-        $this->assertInstanceOf(User::class, $reply['user']);
-        $this->assertSame('Willie', ($reply['user'])->getFirstName());
+        foreach ($replies as $replyId => $reply) {
+            $this->assertSame($expectedData[$replyId]['reply'], $reply['reply']);
+            $this->assertSame($expectedData[$replyId]['date'], $reply['date']);
+            $this->assertSame($expectedData[$replyId]['attachments'], $reply['attachments']);
+            $this->assertInstanceOf(User::class, $reply['user']);
+            $this->assertSame($expectedData[$replyId]['userFirstName'], ($reply['user'])->getFirstName());
+            $this->assertSame($expectedData[$replyId]['userEmail'], ($reply['user'])->getEmail());
+        }
     }
 
     public function testAssembledHistory()
@@ -339,7 +345,7 @@ class DataMapperTest extends TestCase
         $dataMapper->mapJSON($this->getJson('conversation.json'));
 
         $tickets = $dataMapper->assemble();
-        $history = ($tickets[458887447])->getHistory();
+        $history = ($tickets[1391])->getHistory();
 
         $expected = 2;
         $this->assertCount($expected, $history);

@@ -111,6 +111,10 @@ class Inserter
     }
 
     /**
+     * Insert the Ticket into the database.
+     *
+     * @since 0.1.1
+     *
      * @param $customerId
      * @param $agentId
      * @param $subject
@@ -140,6 +144,21 @@ class Inserter
         }
 
         return $ticketId;
+    }
+
+    /**
+     * Set the Help Desk's Ticket ID in the post meta database table.
+     *
+     * @since 0.2.0
+     *
+     * @param int $ticketId The ticket's post ID.
+     * @param string|int $helpDeskId The Help Desk's original ID.
+     *
+     * @return bool|int
+     */
+    public function setHelpDeskTicketId($ticketId, $helpDeskId)
+    {
+        return update_post_meta($ticketId, '_wpas_help_desk_ticket_id', sanitize_text_field($helpDeskId));
     }
 
     /**
@@ -200,6 +219,21 @@ class Inserter
         }
 
         return $replyId;
+    }
+
+    /**
+     * Set the Help Desk's Reply ID in the post meta database table.
+     *
+     * @since 0.2.0
+     *
+     * @param int $replyId The reply's post ID.
+     * @param string|int $helpDeskId The Help Desk's original ID.
+     *
+     * @return bool|int
+     */
+    public function setHelpDeskReplyId($replyId, $helpDeskId)
+    {
+        return update_post_meta($replyId, '_wpas_help_desk_reply_id', sanitize_text_field($helpDeskId));
     }
 
     /**

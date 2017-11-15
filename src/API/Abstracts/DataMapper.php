@@ -118,7 +118,7 @@ abstract class DataMapper implements DataMapperInterface
     /**
      * Assembles the individual datasets into the final Ticket model.
      *
-     * @since 0.1.0
+     * @since 0.2.0
      *
      * @return array Returns an array of Ticket models
      */
@@ -127,6 +127,7 @@ abstract class DataMapper implements DataMapperInterface
         $tickets = [];
         foreach ($this->ticketRepository->getAll() as $ticketId => $ticket) {
             $tickets[$ticketId] = new Ticket(
+                $ticketId,
                 $this->userRepository->get($ticket['agentID']),
                 $this->userRepository->get($ticket['customerID']),
                 $this->sourceName,
@@ -143,7 +144,7 @@ abstract class DataMapper implements DataMapperInterface
     /**
      * Assembly the replies for the ticket model.
      *
-     * @since 0.1.0
+     * @since 0.2.0
      *
      * @param int|string $ticketId
      *
@@ -156,8 +157,8 @@ abstract class DataMapper implements DataMapperInterface
             return null;
         }
         $replies = [];
-        foreach ((array)$ticketReplies as $reply) {
-            $replies[] = [
+        foreach ((array)$ticketReplies as $helpDeskId => $reply) {
+            $replies[$helpDeskId] = [
                 'user'        => $this->userRepository->get($reply['userId']),
                 'reply'       => $reply['reply'],
                 'date'        => $reply['timestamp'],

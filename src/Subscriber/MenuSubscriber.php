@@ -19,13 +19,6 @@ class MenuSubscriber extends AbstractSubscriber
     private $updatedOption;
 
     /**
-     * When true, button appears for importing via form post back instead of Ajax.
-     *
-     * @var bool
-     */
-    protected $importViaPostback;
-
-    /**
      * @var MailboxSubscriber
      */
     protected $mailboxSubscriber;
@@ -40,11 +33,14 @@ class MenuSubscriber extends AbstractSubscriber
     {
         parent::__construct($config);
         $this->updatedOption     = false;
-        $this->importViaPostback = $config['importViaPostback'];
         $this->mailboxSubscriber = $mailboxSubscriber;
     }
 
     /**
+     * Get the hooks for registration with the PluginAPI
+     *
+     * @since 0.1.1
+     *
      * {@inheritdoc}
      */
     public static function getHooks()
@@ -53,22 +49,40 @@ class MenuSubscriber extends AbstractSubscriber
             'added_option'   => ['setUpdatedOption', 1],
             'updated_option' => ['setUpdatedOption', 1],
             'deleted_option' => ['setUpdatedOption', 1],
-            'admin_menu'     => 'addImportTicketSubmenu',
+            'admin_menu'     => 'addSubmenu',
+            // Awesome Support PR #504 submitted for this hook.
+//            'wpas_addon_submenu_page' => 'addSubmenu',
         ];
     }
 
-    public function addImportTicketSubmenu()
+    /**
+     * Registers the Importer Ticket submenu with WordPress.
+     *
+     * @since 0.1.1
+     *
+     * @return void
+     */
+    public function addSubmenu()
     {
         add_submenu_page(
             'edit.php?post_type=ticket',
-            __('Import Other Help Desk Tickets', 'awesome-support-importer'),
-            __('Import Other Help Desk Tickets', 'awesome-support-importer'),
+            __('Awesome Support: Importer', 'awesome-support-importer'),
+            __('Importer', 'awesome-support-importer'),
             'manage_options',
             'awesome_support_import_tickets',
             [$this, 'render']
         );
     }
 
+    /**
+     * Sets the updated option.
+     *
+     * @since 0.1.0
+     *
+     * @param string $optionKey
+     *
+     * @return void
+     */
     public function setUpdatedOption($optionKey)
     {
         if (!$this->updatedOption) {
@@ -127,9 +141,18 @@ class MenuSubscriber extends AbstractSubscriber
         return get_option($this->optionsPrefix . 'help-desk');
     }
 
+    /**
+     * Checks if the option is valid.
+     *
+     * @since 0.1.3
+     *
+     * @param string $optionKey
+     *
+     * @return bool
+     */
     private function isValidOption($optionKey)
     {
-        return in_array(
+        return array_key_exists(
             $optionKey,
             $this->optionsConfig
         );

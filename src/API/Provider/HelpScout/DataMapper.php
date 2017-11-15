@@ -9,7 +9,7 @@ class DataMapper extends AbstractDataMapper
     /**
      * Maps the incoming JSON to the individual repositories.
      *
-     * @since 0.1.0
+     * @since 0.1.1
      *
      * @param string $json
      * @param string $key (Optional)
@@ -24,7 +24,7 @@ class DataMapper extends AbstractDataMapper
         if (!$this->withinDateRange($conversation->modifiedAt ?: $conversation->createdAt)) {
             return;
         }
-        $ticketId = $conversation->id;
+        $ticketId = $conversation->number;
 
         $this->mapUsers($conversation);
         $this->mapTicket($ticketId, $conversation);
@@ -84,7 +84,6 @@ class DataMapper extends AbstractDataMapper
             return $this->mapReply($ticketId, $thread->id, $thread);
         }
 
-        // Original ticket
         if ($this->isOriginalTicket($thread)) {
             return $this->mapOriginalTicket($ticketId, $thread);
         }
@@ -194,7 +193,7 @@ class DataMapper extends AbstractDataMapper
      * Map the reply, creating it's model in the repository. If there attachments, map those to store with
      * the reply's model.
      *
-     * @since 0.1.0
+     * @since 0.2.0
      *
      * @param int $ticketId
      * @param int $replyId
@@ -211,7 +210,6 @@ class DataMapper extends AbstractDataMapper
             $replyId,
             [
                 'ticketId'  => $ticketId,
-                'replyId'   => $replyId,
                 'userId'    => $thread->createdBy->id,
                 'reply'     => $thread->body,
                 'timestamp' => $thread->createdAt,

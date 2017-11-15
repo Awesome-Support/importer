@@ -14,7 +14,7 @@ class TicketRepositoryTest extends TestCase
 
     public function setUp()
     {
-        $this->tickets = [
+        $this->tickets    = [
             42 => [
                 'ticketId'    => 42,
                 'agentID'     => 500,
@@ -63,7 +63,7 @@ class TicketRepositoryTest extends TestCase
     public function testSetAttachment()
     {
         $attachment = [
-            'url' => 'http://example.com/image.jpg',
+            'url'      => 'http://example.com/image.jpg',
             'filename' => 'image.jpg',
         ];
         $this->repository->setAttachment(42, $attachment);
@@ -73,7 +73,7 @@ class TicketRepositoryTest extends TestCase
     public function testSetAttachmentNoTicket()
     {
         $attachment = [
-            'url' => 'http://example.com/image.jpg',
+            'url'      => 'http://example.com/image.jpg',
             'filename' => 'image.jpg',
         ];
         $this->repository->setAttachment(2, $attachment);
@@ -83,7 +83,7 @@ class TicketRepositoryTest extends TestCase
     public function testSetAttachmentDuplicate()
     {
         $attachment = [
-            'url' => 'http://example.com/image.jpg',
+            'url'      => 'http://example.com/image.jpg',
             'filename' => 'image.jpg',
         ];
         $this->repository->setAttachment(42, $attachment);
@@ -111,7 +111,7 @@ class TicketRepositoryTest extends TestCase
     public function testGetAll()
     {
         $this->assertSame($this->tickets, $this->repository->getAll());
-        $ticket = [
+        $ticket            = [
             'ticketId'    => 25,
             'agentID'     => 500,
             'customerID'  => 600,
