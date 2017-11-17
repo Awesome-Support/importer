@@ -35,6 +35,7 @@ class EmailSubscriber
      */
     protected function unregisterEmails()
     {
+		/* Unregister emails from core */
         $config = [
             'wpas_open_ticket_after'                 => ['wpas_notify_confirmation', 11, 2],
             'wpas_open_ticket_after'                 => ['wpas_notify_assignment', 12, 2],
@@ -47,6 +48,10 @@ class EmailSubscriber
             'wpas_custom_field_updated'              => ['wpas_additional_agents_new_assignment_notify', 10, 3],
         ];
 
+		/* @TODO: Unregister other actions from rules engine - just in case user ignored our warnings its activated */
+		
+		/* @TODO: Unregister other actions from notifications add-on - just in case user ignored our warnings its activated */
+		
         foreach ($config as $eventName => $eventConfig) {
             if (has_action($eventName, $eventConfig[0])) {
                 remove_action($eventName, $eventConfig[0], $eventConfig[1], $eventConfig[2]);

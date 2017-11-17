@@ -13,19 +13,64 @@
     <?php endif; ?>
 
     <div class="notice notice-success is-dismissible">
-        <p><?php
+        <h2><?php
+			//@TODO: Check for known classes from other add-ons and list the related add-ons here if they're activated.
+			//@TODO: Check and warn for minimum version of Awesome Support to be 4.3.2 
             _e(
-                'Please disable all Awesome Support Add-ons to avoid any conflicts during the import process.',
+                'WARNING: You should disable *ALL* Awesome Support Add-ons to avoid unwanted emails and other alerts being sent out for imported tickets.  It will also reduce the chance of any conflicts during the import process.',
                 'awesome-support-importer'
             );
-            ?></p>
+            ?></h2>
     </div>
 
+    <h2><?php
+        // @codingStandardsIgnoreStart
+		_e('Introduction', 'awesome-support-importer');
+        // @codingStandardsIgnoreEnd
+        ?></h2>
+	
+	
+    <p><?php
+        // @codingStandardsIgnoreStart
+		_e('Welcome to the Awesome Support Importer where you can import your existing tickets from Zendesk, Helpscout and Ticksy.', 'awesome-support-importer');
+        // @codingStandardsIgnoreEnd
+        ?></p>
+		
+    <p><?php
+        // @codingStandardsIgnoreStart
+		_e('Please make sure you BACKUP your WordPress installation before proceeding!  This import process cannot be reversed.', 'awesome-support-importer');		
+        // @codingStandardsIgnoreEnd
+        ?></p>		
+		
+    <h2><?php
+        // @codingStandardsIgnoreStart
+		_e('What will be imported?', 'awesome-support-importer');
+        // @codingStandardsIgnoreEnd
+        ?></h2>
+
+    <p><?php
+        // @codingStandardsIgnoreStart
+        _e('The import process will import the original ticket, the replies, create new agents in Awesome Support if necessary and create new users if necessary.', 'awesome-support-importer');
+        // @codingStandardsIgnoreEnd
+        ?></p>				
+		
+    <p><?php
+        // @codingStandardsIgnoreStart
+        _e('Notes, tags and other features unique to the SAAS service will not be imported.', 'awesome-support-importer');		
+        // @codingStandardsIgnoreEnd
+        ?></p>
+
+    <h2><?php
+        // @codingStandardsIgnoreStart
+		_e('Ready? Good, Lets Do It!', 'awesome-support-importer');
+        // @codingStandardsIgnoreEnd
+        ?></h2>		
+		
     <p><?php
         // @codingStandardsIgnoreStart
         _e('* means the field is required in order to import the tickets.  When all required fields are filled out, then the "Import Tickets" button will be available to you.', 'awesome-support-importer');
         // @codingStandardsIgnoreEnd
-        ?></p>
+        ?></p>		
 
     <form action="" method="post" name="awesome-support-importer">
         <p class="option">
