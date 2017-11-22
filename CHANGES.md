@@ -1,3 +1,7 @@
+# 0.2.1
+
+- [48] Disables emails.
+
 # 0.1.2
 
 - [41] Ticksy - reply attachments assigned to Ticket. Ticksy corrected the response JSON packet. This beta release adjusts the Data Mapper and tests to ensure attachments are properly assigned to the respective ticket or reply.
