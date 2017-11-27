@@ -1,3 +1,8 @@
+# 0.2.2
+
+- [49] Don't load unless Awesome Support is loaded.
+- [49] Added an admin notice when Awesome Support is not activated.
+
 # 0.2.1
 
 - [48] Disables emails.
