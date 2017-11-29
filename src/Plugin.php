@@ -101,7 +101,7 @@ class Plugin
     /**
      * Load the plugin and register subscribers.
      *
-     * @since 0.2.0
+     * @since 0.2.2
      *
      * @return bool
      */
@@ -109,6 +109,11 @@ class Plugin
     {
         if ($this->isLoaded()) {
             return false;
+        }
+
+        // Bail out if Awesome Support is not loaded.
+        if (!$this->isAwesomeSupportLoaded()) {
+            return;
         }
 
         foreach ($this->getSubscribers() as $subscriber) {
@@ -152,5 +157,37 @@ class Plugin
             'title'        => __('Help Desk SaaS Ticket ID', 'awesome-support-importer'),
             'backend_only' => true,
         ]);
+    }
+
+    /**
+     * Checks if Awesome Support is loaded.
+     *
+     * If no, it registers the admin notice callback to alert the user.
+     *
+     * @since 0.2.2
+     *
+     * @return bool
+     */
+    protected function isAwesomeSupportLoaded()
+    {
+        $isLoaded = class_exists('Awesome_Support');
+
+        if (!$isLoaded) {
+            add_action('admin_notices', [$this, 'renderAwesomeSupportRequired']);
+        }
+
+        return $isLoaded;
+    }
+
+    /**
+     * Display the Admin Error Notice to alert the user that Awesome Support is required to run this plugin.
+     *
+     * @since 0.2.2
+     *
+     * @return void
+     */
+    public function renderAwesomeSupportRequired()
+    {
+        include $this->pluginPath . 'views/awesome-support-required.php';
     }
 }

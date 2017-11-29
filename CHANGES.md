@@ -1,6 +1,12 @@
-# 0.2.1
+# 0.2.2 / 1.0.1
+
+- [49] Don't load unless Awesome Support is loaded.
+- [49] Added an admin notice when Awesome Support is not activated.
+
+# 0.2.1 / 1.0.0
 
 - [48] Disables emails.
+- [00] Moved version number to 1.0.0 for initial public release.
 
 # 0.1.2
 

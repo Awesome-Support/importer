@@ -64,13 +64,13 @@
         // @codingStandardsIgnoreStart
 		_e('Ready? Good, Lets Do It!', 'awesome-support-importer');
         // @codingStandardsIgnoreEnd
-        ?></h2>		
-		
+        ?></h2>	
+
     <p><?php
         // @codingStandardsIgnoreStart
         _e('* means the field is required in order to import the tickets.  When all required fields are filled out, then the "Import Tickets" button will be available to you.', 'awesome-support-importer');
         // @codingStandardsIgnoreEnd
-        ?></p>		
+        ?></p>
 
     <form action="" method="post" name="awesome-support-importer">
         <p class="option">

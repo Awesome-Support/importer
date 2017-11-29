@@ -54,7 +54,7 @@ Composer installs the required dependencies:
 
 ## Importing
 
-Once the plugin is installed and activated, go to "Tickets > Import Other Help Desk Tickets".  
+Once the plugin is installed and activated, go to "Tickets > Importer".  
 
 1. Select the Help Desk Provider from which you will import existing tickets into Awesome Support.
 2. Fill in your credentials into each form field.
