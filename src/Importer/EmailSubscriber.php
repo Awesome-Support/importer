@@ -46,7 +46,10 @@ class EmailSubscriber
             ['wpas_after_close_ticket', 'wpas_notify_close', 10],
             ['wpas_custom_field_updated', 'wpas_additional_agents_new_assignment_notify', 10],
         ];
-
+		
+		/* @TODO: Unregister other actions from rules engine - just in case user ignored our warnings its activated */		
+		/* @TODO: Unregister other actions from notifications add-on - just in case user ignored our warnings its activated */
+		
         foreach ($config as $eventConfig) {
             remove_action($eventConfig[0], $eventConfig[1], $eventConfig[2]);
         }
