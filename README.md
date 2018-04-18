@@ -139,8 +139,8 @@ Follow these steps to import your tickets:
 When importing a large volume of tickets you will want to make sure that your WordPress configuration and PHP configuration files are set up to use a larger amount of memory and to allow script execution to run longer.  If you are using a third party host you might need to speak with them to get your memory and execution times temporarily lifted.
 If you do have control over your own server, two settings to temporarily change would be the following:
 
-memory_limit = -1
-max_execution_time = 0
+* memory_limit = -1
+* max_execution_time = 0
 
 This effectively allows PHP to use all available memory and to run as long as necessary
 
