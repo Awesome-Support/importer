@@ -110,7 +110,9 @@ class DataMapper extends AbstractDataMapper
 
             // Psst...using a closure to pass $data byRef.
             array_walk($ticketEvent->child_events, function ($childEvent) use (&$data) {
-                $this->mapChildEvent($childEvent, $data);
+                if (!isset($childEvent->public) || $childEvent->public) {
+                    $this->mapChildEvent($childEvent, $data);
+                }
             });
 
             // If there's a reply, then let's process it.
