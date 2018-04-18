@@ -254,7 +254,7 @@ class Inserter
         wp_set_current_user($author->ID);
 
         if ('closed' === $status) {
-            wpas_close_ticket($ticketId);
+            wpas_close_ticket($ticketId, 0, true);
             update_post_meta($ticketId, '_ticket_closed_on', $date);
             update_post_meta($ticketId, '_ticket_closed_on_gmt', get_gmt_from_date($date));
         }
