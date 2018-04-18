@@ -134,3 +134,14 @@ Follow these steps to import your tickets:
 4. Click the "Save" button. The information you entered is saved.
 5. Click on the "Import Tickets" button.
 6. Stay on this page. Please be patient, as it can take awhile.  Take a break while it does its work.
+
+### Importing a large volume of tickets
+When importing a large volume of tickets you will want to make sure that your WordPress configuration and PHP configuration files are set up to use a larger amount of memory and to allow script execution to run longer.  If you are using a third party host you might need to speak with them to get your memory and execution times temporarily lifted.
+If you do have control over your own server, two settings to temporarily change would be the following:
+
+memory_limit = -1
+max_execution_time = 0
+
+This effectively allows PHP to use all available memory and to run as long as necessary
+
+Note that you might have to change WordPress memory limits as well in your wp-config.php file!
