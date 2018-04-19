@@ -128,8 +128,8 @@ abstract class DataMapper implements DataMapperInterface
         foreach ($this->ticketRepository->getAll() as $ticketId => $ticket) {
             $tickets[$ticketId] = new Ticket(
                 $ticketId,
-                $this->userRepository->get($ticket['agentID']),
-                $this->userRepository->get($ticket['customerID']),
+                isset($ticket['agentID']) ? $this->userRepository->get($ticket['agentID']) : null,
+                isset($ticket['customerID']) ? $this->userRepository->get($ticket['customerID']) : null,
                 $this->sourceName,
                 $ticket['subject'],
                 $ticket['description'],
@@ -158,7 +158,7 @@ abstract class DataMapper implements DataMapperInterface
         }
         $replies = [];
         foreach ((array)$ticketReplies as $helpDeskId => $reply) {
-            $replies[$helpDeskId] = [
+			$replies[$helpDeskId] = [
                 'user'        => $this->userRepository->get($reply['userId']),
                 'reply'       => $reply['reply'],
                 'date'        => $reply['timestamp'],
