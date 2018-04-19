@@ -96,7 +96,7 @@ class Inserter
         ], false);
 
         if ($userId instanceof WP_Error) {
-            $this->throwUserError($user, $userId, 'insertUser');
+            $this->throwUserError($user, $userId, __METHOD__);
         }
 
         return get_user_by('id', $userId);
