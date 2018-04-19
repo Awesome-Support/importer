@@ -187,9 +187,11 @@ class DataMapper extends AbstractDataMapper
     protected function mapReplyOrTicket(array $data)
     {
         if ($data['isOriginalTicket'] && isset($data['attachments'])) {
+            $attachments = [];
             foreach ($data['attachments'] as $attachment) {
-               return $this->mapAttachments($attachment, $data['ticketId']);
+               $attachments[] = $this->mapAttachments($attachment, $data['ticketId']);
             }
+            return $attachments;
         }
 
         if ($data['requesterId']) {
