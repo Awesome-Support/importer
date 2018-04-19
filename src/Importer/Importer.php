@@ -175,7 +175,7 @@ class Importer implements ImporterInterface
     protected function processTicket(Ticket $ticket)
     {
         // Look it up in the database. If it exists, return the ticket's post ID.
-        $ticketId = $this->locator->findTicket($ticket);
+        $ticketId = $this->locator->findTicketByHelpDeskId($ticket->getHelpDeskId());
         if ($this->validator->isValidTicketId($ticketId)) {
             return $ticketId;
         }

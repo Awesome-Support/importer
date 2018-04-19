@@ -71,6 +71,35 @@ class Locator
     }
 
     /**
+     * Checks if the ticket already exists in the database by help desk ID. If yes, the ticket
+     * with post ID is returned; else false.
+     *
+     * @since 0.1.0
+     *
+     * @param Ticket $ticket
+     *
+     * @return bool|int
+     */
+    public function findTicketByHelpDeskId($helpDeskId)
+    {
+       	$sqlQuery = $this->wpdb->prepare(
+            'SELECT *' . "\n" .
+            "FROM {$this->wpdb->postmeta} " . "\n" .
+            "WHERE meta_key='_wpas_help_desk_ticket_id' AND meta_value = %s",
+            $helpDeskId
+        );
+
+        $records = $this->wpdb->get_results($sqlQuery);
+        if ($records) {
+            foreach ((array)$records as $record) {
+                return (int)$record->post_id;
+            }
+        }
+
+        return self::NO_RECORDS_FOUND;
+    }
+
+    /**
      * Search the database for this reply to avoid duplicates during import.
      *
      * @since 0.1.0
