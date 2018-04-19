@@ -225,7 +225,7 @@ class Importer implements ImporterInterface
             }
 
             // If it exists in the db, no need to import.
-            $replyId = $this->locator->findReply($ticketId, $reply['reply']);
+            $replyId = $this->locator->findReplyByHelpDeskId($helpDeskId);
             if ($this->validator->isValidReplyId($replyId)) {
                 continue;
             }

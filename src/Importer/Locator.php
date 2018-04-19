@@ -72,11 +72,11 @@ class Locator
 
     /**
      * Checks if the ticket already exists in the database by help desk ID. If yes, the ticket
-     * with post ID is returned; else false.
+     * post ID is returned; else false.
      *
      * @since 0.1.0
      *
-     * @param Ticket $ticket
+     * @param HelpDeskId $helpDeskId
      *
      * @return bool|int
      */
@@ -124,6 +124,35 @@ class Locator
         }
 
         return self::NO_MATCH_FOUND;
+    }
+
+    /**
+     * Checks if the reply already exists in the database by help desk ID. If yes, the reply
+     * post ID is returned; else false.
+     *
+     * @since 0.1.0
+     *
+     * @param HelpDeskId $helpDeskId
+     *
+     * @return bool|int
+     */
+    public function findReplyByHelpDeskId($helpDeskId)
+    {
+       	$sqlQuery = $this->wpdb->prepare(
+            'SELECT *' . "\n" .
+            "FROM {$this->wpdb->postmeta} " . "\n" .
+            "WHERE meta_key='_wpas_help_desk_reply_id' AND meta_value = %s",
+            $helpDeskId
+        );
+
+        $records = $this->wpdb->get_results($sqlQuery);
+        if ($records) {
+            foreach ((array)$records as $record) {
+                return (int)$record->post_id;
+            }
+        }
+
+        return self::NO_RECORDS_FOUND;
     }
 
     /**
