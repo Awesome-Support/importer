@@ -186,8 +186,10 @@ class DataMapper extends AbstractDataMapper
      */
     protected function mapReplyOrTicket(array $data)
     {
-        if ($data['isOriginalTicket']) {
-            return $this->mapAttachments($data['attachments'], $data['ticketId']);
+        if ($data['isOriginalTicket'] && isset($data['attachments'])) {
+            foreach ($data['attachments'] as $attachment) {
+               return $this->mapAttachments($attachment, $data['ticketId']);
+            }
         }
 
         if ($data['requesterId']) {
@@ -195,7 +197,11 @@ class DataMapper extends AbstractDataMapper
         }
 
         $this->replyRepository->create($data['ticketId'], $data['replyId'], $data['reply']);
-        $this->mapAttachments($data['attachments'], $data['ticketId'], $data['replyId']);
+        if (isset($data['attachments'])) {
+            foreach ($data['attachments'] as $attachment) {
+                $this->mapAttachments($attachment, $data['ticketId'], $data['replyId']);
+            }
+        }
     }
 
     /**
