@@ -230,7 +230,7 @@ class Importer implements ImporterInterface
                 continue;
             }
 
-            $this->processReply($reply, $ticket, $ticketId, $helpDeskId);
+            $this->processReply($reply, $ticketId, $helpDeskId);
         }
     }
 
@@ -240,15 +240,14 @@ class Importer implements ImporterInterface
      * @since 0.2.0
      *
      * @param array $reply
-     * @param Ticket $ticket
      * @param int $ticketId
      * @param string|int $helpDeskReplyId
      *
      * @return void
      */
-    protected function processReply(array $reply, Ticket $ticket, $ticketId, $helpDeskReplyId)
+    protected function processReply(array $reply, $ticketId, $helpDeskReplyId)
     {
-        $author = $this->processTicketUser($ticket, $reply['user']);
+        $author = $this->processUser($reply['user']);
 
         $replyId = $this->inserter->insertReply(
             $ticketId,
@@ -288,7 +287,8 @@ class Importer implements ImporterInterface
             return;
         }
         foreach ($ticket->getHistory() as $history) {
-            $author = $this->processTicketUser($ticket, $history['user']);
+            $author = $this->processUser($history['user']);
+
             $this->inserter->insertHistoryItem($ticketId, $author, $history['date'], $history['value']);
         }
     }
@@ -304,7 +304,7 @@ class Importer implements ImporterInterface
      */
     protected function processUser($userEntity)
     {
-        if (!$userEntity instanceof User) {
+        if (!$userEntity instanceof User || empty($userEntity->getEmail())) {
             return $this->currentUser;
         }
 
@@ -316,31 +316,6 @@ class Importer implements ImporterInterface
         if ($user instanceof WP_User) {
             return $user;
         }
-    }
-    /**
-     * Process a User associated with a Ticket. Checks to ensure that email 
-     * address is not empty and if it is it will user next likely ticket user.
-     *
-     * @since 0.1.0
-     *
-     * @param Ticket $ticket
-     * @param User|null $userEntity
-     *
-     * @return false|WP_User
-     */
-    protected function processTicketUser(Ticket $ticket, $userEntity)
-    {
-        if ($userEntity instanceof User && empty($userEntity->getEmail())) {
-            $customer = $ticket->getCustomer();
-            if ($customer instanceof User) {
-                $userEntity = $customer;
-            }
-        }
-        if ($userEntity instanceof User && empty($userEntity->getEmail())) {
-            $userEntity = $ticket->getAgent();
-        }
-        
-        return $this->processUser($userEntity);
     }
 
     /**
