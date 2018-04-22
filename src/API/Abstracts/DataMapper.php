@@ -344,6 +344,7 @@ abstract class DataMapper implements DataMapperInterface
         switch ($eventStatus) {
             case 'closed':
             case 'solved':
+            case 'deleted':
                 return Status::CLOSED;
             case 'hold':
                 return Status::HOLD;
