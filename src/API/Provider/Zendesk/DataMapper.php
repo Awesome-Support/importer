@@ -161,7 +161,8 @@ class DataMapper extends AbstractDataMapper
                 $data['ticketId'],
                 $data['requesterId'] ?: $data['updaterId'],
                 $this->getHistoryStatus($event->status),
-                $data['date']
+                $data['date'], 
+                $data['id']
             );
 
             if ('open' === $event->status) {
@@ -187,9 +188,7 @@ class DataMapper extends AbstractDataMapper
     protected function mapReplyOrTicket(array $data)
     {
         if ($data['isOriginalTicket'] && isset($data['attachments'])) {
-            foreach ($data['attachments'] as $attachment) {
-                $this->mapAttachments($attachment, $data['ticketId']);
-            }
+            $this->mapAttachments($data['attachments'], $data['ticketId']);
             return;
         }
 
@@ -199,9 +198,7 @@ class DataMapper extends AbstractDataMapper
 
         $this->replyRepository->create($data['ticketId'], $data['replyId'], $data['reply']);
         if (isset($data['attachments'])) {
-            foreach ($data['attachments'] as $attachment) {
-                $this->mapAttachments($attachment, $data['ticketId'], $data['replyId']);
-            }
+            $this->mapAttachments($data['attachments'], $data['ticketId'], $data['replyId']);
         }
     }
 
