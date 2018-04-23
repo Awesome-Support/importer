@@ -16,13 +16,14 @@ class HistoryRepository extends Repository
      *
      * @return void
      */
-    public function create($ticketId, $userId, $status, $timestamp)
+    public function create($ticketId, $userId, $status, $timestamp, $id = 0)
     {
         if (!$this->has($ticketId)) {
             $this->set($ticketId, []);
         }
 
         $this->items[$ticketId][] = [
+            'id'    => $id,
             'user'  => (int)$userId,
             'value' => $status,
             'date'  => $timestamp,

@@ -255,24 +255,26 @@ class Inserter
 
         if ('closed' === $status) {
             wpas_close_ticket($ticketId, 0, true);
-            update_post_meta($ticketId, '_ticket_closed_on', $date);
-            update_post_meta($ticketId, '_ticket_closed_on_gmt', get_gmt_from_date($date));
         }
-
         if ('open' === $status) {
             wpas_reopen_ticket($ticketId);
         }
-
         if ('closed' !== $status && 'open' !== $status) {
             wpas_update_ticket_status($ticketId, $status);
         }
 
+        $postId = $this->locator->findPostByMetaId($this->wpdb->insert_id);
         $response = wp_update_post([
-            'ID'            => $this->wpdb->insert_id,
+            'ID'            => $postId,
             'post_author'   => $author->ID,
             'post_date'     => $date,
             'post_date_gmt' => get_gmt_from_date($date),
         ]);
+
+        if ('closed' === $status) {
+            update_post_meta($ticketId, '_ticket_closed_on', $date);
+            update_post_meta($ticketId, '_ticket_closed_on_gmt', get_gmt_from_date($date));
+        }
 
         wp_set_current_user($this->currentUserId);
 
@@ -290,6 +292,22 @@ class Inserter
             ],
             __CLASS__
         );
+    }
+
+    /**
+     * Set the history ID in the post meta database table.
+     *
+     * @since 0.2.0
+     *
+     * @param int $replyId The history's post ID.
+     * @param string|int $helpDeskId The original ID.
+     *
+     * @return bool|int
+     */
+
+    public function setHelpDeskHistoryId($replyId, $helpDeskId)
+    {
+        return update_post_meta($replyId, '_wpas_help_desk_history_id', sanitize_text_field($helpDeskId));
     }
 
     /**

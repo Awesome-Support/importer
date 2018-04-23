@@ -28,6 +28,11 @@ class Validator
         return $this->validNonZeroInteger($replyId);
     }
 
+    public function isValidHistoryId($replyId)
+    {
+        return $this->validNonZeroInteger($replyId);
+    }
+
     protected function validNonZeroInteger($integer)
     {
         return is_integer($integer) &&

@@ -156,6 +156,63 @@ class Locator
     }
 
     /**
+     * Checks if the history already exists in the database by help desk ID. If yes, the history
+     * post ID is returned; else false.
+     *
+     * @since 0.1.0
+     *
+     * @param HelpDeskId $helpDeskId
+     *
+     * @return bool|int
+     */
+    public function findHistoryByHelpDeskId($helpDeskId)
+    {
+       	$sqlQuery = $this->wpdb->prepare(
+            'SELECT *' . "\n" .
+            "FROM {$this->wpdb->postmeta} " . "\n" .
+            "WHERE meta_key='_wpas_help_desk_history_id' AND meta_value = %s",
+            $helpDeskId
+        );
+
+        $records = $this->wpdb->get_results($sqlQuery);
+        if ($records) {
+            foreach ((array)$records as $record) {
+                return (int)$record->post_id;
+            }
+        }
+
+        return self::NO_RECORDS_FOUND;
+    }
+
+    /**
+     * Finds a post id by meta id
+     *
+     * @since 0.1.0
+     *
+     * @param MetaId $metaId
+     *
+     * @return bool|int
+     */
+    public function findPostByMetaId($metaId)
+    {
+       	$sqlQuery = $this->wpdb->prepare(
+            'SELECT *' . "\n" .
+            "FROM {$this->wpdb->postmeta} " . "\n" .
+            "WHERE meta_id=%d",
+            (int)$metaId
+        );
+
+        $records = $this->wpdb->get_results($sqlQuery);
+        if ($records) {
+            foreach ((array)$records as $record) {
+                return (int)$record->post_id;
+            }
+        }
+
+        return self::NO_RECORDS_FOUND;
+    }
+
+    /**
      * Checks the database for this attachment file.
      *
      * @since 0.1.0
