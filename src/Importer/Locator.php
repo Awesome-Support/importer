@@ -139,7 +139,7 @@ class Locator
     public function findReplyByHelpDeskId($helpDeskId)
     {
         $sqlQuery = $this->wpdb->prepare(
-            'SELECT * ' .  .
+            'SELECT * ' . 
             "FROM {$this->wpdb->postmeta} " . 
             "WHERE meta_key='_wpas_help_desk_reply_id' AND meta_value = %s",
             $helpDeskId
