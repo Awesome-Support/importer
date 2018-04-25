@@ -159,7 +159,7 @@ abstract class DataMapper implements DataMapperInterface
         }
         $replies = [];
         foreach ((array)$ticketReplies as $helpDeskId => $reply) {
-			$replies[$helpDeskId] = [
+            $replies[$helpDeskId] = [
                 'user'        => $this->userRepository->get($reply['userId']),
                 'reply'       => $reply['reply'],
                 'date'        => $reply['timestamp'],

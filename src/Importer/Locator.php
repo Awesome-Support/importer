@@ -82,9 +82,9 @@ class Locator
      */
     public function findTicketByHelpDeskId($helpDeskId)
     {
-       	$sqlQuery = $this->wpdb->prepare(
-            'SELECT *' . "\n" .
-            "FROM {$this->wpdb->postmeta} " . "\n" .
+        $sqlQuery = $this->wpdb->prepare(
+            'SELECT * ' .
+            "FROM {$this->wpdb->postmeta} " .
             "WHERE meta_key='_wpas_help_desk_ticket_id' AND meta_value = %s",
             $helpDeskId
         );
@@ -138,9 +138,9 @@ class Locator
      */
     public function findReplyByHelpDeskId($helpDeskId)
     {
-       	$sqlQuery = $this->wpdb->prepare(
-            'SELECT *' . "\n" .
-            "FROM {$this->wpdb->postmeta} " . "\n" .
+        $sqlQuery = $this->wpdb->prepare(
+            'SELECT * ' .  .
+            "FROM {$this->wpdb->postmeta} " . 
             "WHERE meta_key='_wpas_help_desk_reply_id' AND meta_value = %s",
             $helpDeskId
         );
@@ -167,9 +167,9 @@ class Locator
      */
     public function findHistoryByHelpDeskId($helpDeskId)
     {
-       	$sqlQuery = $this->wpdb->prepare(
-            'SELECT *' . "\n" .
-            "FROM {$this->wpdb->postmeta} " . "\n" .
+        $sqlQuery = $this->wpdb->prepare(
+            'SELECT * ' . 
+            "FROM {$this->wpdb->postmeta} " . 
             "WHERE meta_key='_wpas_help_desk_history_id' AND meta_value = %s",
             $helpDeskId
         );
@@ -195,9 +195,9 @@ class Locator
      */
     public function findPostByMetaId($metaId)
     {
-       	$sqlQuery = $this->wpdb->prepare(
-            'SELECT *' . "\n" .
-            "FROM {$this->wpdb->postmeta} " . "\n" .
+        $sqlQuery = $this->wpdb->prepare(
+            'SELECT * ' . 
+            "FROM {$this->wpdb->postmeta} " . 
             "WHERE meta_id=%d",
             (int)$metaId
         );
@@ -253,8 +253,8 @@ class Locator
         }
 
         $sqlQuery = $this->wpdb->prepare(
-            'SELECT p.ID, p.post_parent as ticketId, p.guid as attachmentUrl' . "\n" .
-            "FROM {$this->wpdb->posts} AS p" . "\n" .
+            'SELECT p.ID, p.post_parent as ticketId, p.guid as attachmentUrl ' . 
+            "FROM {$this->wpdb->posts} AS p " . 
             "WHERE p.post_type = 'attachment' AND p.post_parent = %s",
             $ticketId
         );
@@ -283,8 +283,8 @@ class Locator
     protected function getRepliesFromDatabase($slug)
     {
         $sqlQuery = $this->wpdb->prepare(
-            'SELECT p.ID AS replyId, p.post_content AS reply' . "\n" .
-            "FROM {$this->wpdb->posts} AS p" . "\n" .
+            'SELECT p.ID AS replyId, p.post_content AS reply ' . 
+            "FROM {$this->wpdb->posts} AS p " . 
             "WHERE p.post_type = 'ticket_reply' AND p.post_name = %s OR p.post_name LIKE %s",
             $slug,
             $slug . '-%'
