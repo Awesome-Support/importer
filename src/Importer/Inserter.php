@@ -166,16 +166,19 @@ class Inserter
      * @since 0.2.0
      *
      * @param int $ticketId The ticket's post ID.
-     * @param string|int $helpDeskId The Help Desk's original ID.
+     * @param string $createdAt The Help Desk's creation date.
+     * @param string $updatedAt The Help Desk's modified date.
      *
      * @return bool|int
      */
-    public function setHelpDeskTicketDate($ticketId, $date)
+    public function setHelpDeskTicketDate($ticketId, $createdAt, $updatedAt)
     {
         $response = wp_update_post([
-            'ID'            => $ticketId,
-            'post_date'     => $date,
-            'post_date_gmt' => get_gmt_from_date($date),
+            'ID'                => $ticketId,
+            'post_date'         => $createdAt,
+            'post_date_gmt'     => get_gmt_from_date($createdAt),
+            'post_modified'     => $updatedAt,
+            'post_modified_gmt' => get_gmt_from_date($updatedAt),
         ]);
     }
     
@@ -222,11 +225,13 @@ class Inserter
 
         $replyId = wpas_insert_reply(
             [
-                'post_content' => $reply,
-                'post_author'  => $author->ID,
-                'post_date'    => $date,
-                'post_date_gmt'=> get_gmt_from_date($date),
-                'post_status'  => $read ? 'read' : 'unread',
+                'post_content'     => $reply,
+                'post_author'      => $author->ID,
+                'post_date'        => $date,
+                'post_date_gmt'    => get_gmt_from_date($date),
+                'post_modified'    => $date,
+                'post_modified_gmt'=> get_gmt_from_date($date),
+                'post_status'      => $read ? 'read' : 'unread',
             ], 
             $ticketId
         );

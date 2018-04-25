@@ -197,7 +197,7 @@ class Importer implements ImporterInterface
         );
 
         $this->inserter->setHelpDeskTicketId($ticketId, $ticket->getHelpDeskId());
-        $this->inserter->setHelpDeskTicketDate($ticketId, $ticket->getCreatedAt());
+        $this->inserter->setHelpDeskTicketDate($ticketId, $ticket->getCreatedAt(), $ticket->getUpdatedAt());
 
         $this->numberTickets++;
         $this->processAttachments($ticket->getAttachments(), $ticketId);

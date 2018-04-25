@@ -39,6 +39,16 @@ class Ticket
     private $description;
 
     /**
+     * @var string
+     */
+    private $createdAt;
+
+    /**
+     * @var string
+     */
+    private $updatedAt;
+
+    /**
      * @var array|null
      */
     private $attachments;
@@ -59,11 +69,6 @@ class Ticket
     private $slug;
 
     /**
-     * @var string
-     */
-    private $createdAt;
-
-    /**
      * Ticket constructor.
      *
      * @since 0.2.0
@@ -75,6 +80,7 @@ class Ticket
      * @param $subject
      * @param $description
      * @param $createdAt
+     * @param $updatedAt
      * @param $attachments
      * @param $replies
      * @param $history
@@ -87,6 +93,7 @@ class Ticket
         $subject,
         $description,
         $createdAt,
+        $updatedAt,
         array $attachments = null,
         array $replies = null,
         array $history = null
@@ -98,6 +105,7 @@ class Ticket
         $this->subject     = $subject;
         $this->description = $description;
         $this->createdAt   = $createdAt;
+        $this->updatedAt   = $updatedAt;
         $this->attachments = $attachments;
         $this->replies     = $replies;
         $this->history     = $history;
@@ -173,6 +181,14 @@ class Ticket
     public function getCreatedAt()
     {
         return $this->createdAt;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
     }
 
     /**

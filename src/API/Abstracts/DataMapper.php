@@ -134,6 +134,7 @@ abstract class DataMapper implements DataMapperInterface
                 $ticket['subject'],
                 $ticket['description'],
                 $ticket['createdAt'],
+                $ticket['updatedAt'],
                 $ticket['attachments'],
                 $this->assembleReplies($ticketId),
                 $this->assembleHistory($ticketId)
