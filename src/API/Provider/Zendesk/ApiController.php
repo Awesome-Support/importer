@@ -44,7 +44,6 @@ class ApiController extends ProviderController
         foreach ($this->jsonResponses['tickets'] as $json) {
             $packet = $this->fromJSON($json);
             foreach ($packet->tickets as $ticket) {
-                echo '<pre>Getting '.$ticket->comment_count.' comments for ticket '.$ticket->id.'</pre>';
                 if ((int)$ticket->comment_count > 0 && $ticket->status != 'deleted') {
                     $this->requestComments($ticket->id);
                 }
