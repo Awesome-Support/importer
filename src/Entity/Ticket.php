@@ -59,6 +59,11 @@ class Ticket
     private $slug;
 
     /**
+     * @var string
+     */
+    private $createdAt;
+
+    /**
      * Ticket constructor.
      *
      * @since 0.2.0
@@ -69,6 +74,7 @@ class Ticket
      * @param $source
      * @param $subject
      * @param $description
+     * @param $createdAt
      * @param $attachments
      * @param $replies
      * @param $history
@@ -80,6 +86,7 @@ class Ticket
         $source,
         $subject,
         $description,
+        $createdAt,
         array $attachments = null,
         array $replies = null,
         array $history = null
@@ -90,6 +97,7 @@ class Ticket
         $this->source      = $source;
         $this->subject     = $subject;
         $this->description = $description;
+        $this->createdAt   = $createdAt;
         $this->attachments = $attachments;
         $this->replies     = $replies;
         $this->history     = $history;
@@ -157,6 +165,14 @@ class Ticket
     public function getDescription()
     {
         return $this->description;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
     }
 
     /**

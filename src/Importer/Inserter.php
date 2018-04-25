@@ -160,7 +160,25 @@ class Inserter
     {
         return update_post_meta($ticketId, '_wpas_help_desk_ticket_id', sanitize_text_field($helpDeskId));
     }
-
+    /**
+     * Set the Help Desk's Ticket date in the post meta database table.
+     *
+     * @since 0.2.0
+     *
+     * @param int $ticketId The ticket's post ID.
+     * @param string|int $helpDeskId The Help Desk's original ID.
+     *
+     * @return bool|int
+     */
+    public function setHelpDeskTicketDate($ticketId, $date)
+    {
+        $response = wp_update_post([
+            'ID'            => $ticketId,
+            'post_date'     => $date,
+            'post_date_gmt' => get_gmt_from_date($date),
+        ]);
+    }
+    
     /**
      * Upload and insert the attachment into the database.
      *
@@ -207,16 +225,19 @@ class Inserter
                 'post_content' => $reply,
                 'post_author'  => $author->ID,
                 'post_date'    => $date,
+                'post_date_gmt'=> get_gmt_from_date($date),
                 'post_status'  => $read ? 'read' : 'unread',
-            ],
+            ], 
             $ticketId
         );
 
         if ($private) {
-            $response = wp_update_post([
-                'ID'            => $replyId,
-                'post_type'     => 'ticket_note'
-            ]);
+            $response = wp_update_post(
+                [
+                    'ID'            => $replyId,
+                    'post_type'     => 'ticket_note'
+                ]
+            );
         }
 
         wp_set_current_user($this->currentUserId);
