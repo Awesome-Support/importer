@@ -249,7 +249,7 @@ class Importer implements ImporterInterface
     {
         $author = $this->processUser($reply['user']);
 
-		$replyId = $this->inserter->insertReply(
+        $replyId = $this->inserter->insertReply(
             $ticketId,
             $reply['reply'],
             $author,
@@ -288,19 +288,15 @@ class Importer implements ImporterInterface
         }
         foreach ($ticket->getHistory() as $history) {
             // If it exists in the db, no need to import.
-            if (!empty($history['id'])) { 
-                $historyId = $this->locator->findHistoryByHelpDeskId($history['id']);
-                if ($this->validator->isValidHistoryId($historyId)) {
-                    continue;
-                }
-            }
+            $historyId = $this->locator->findHistoryByHelpDeskId($history['id']);
+            if ($this->validator->isValidHistoryId($historyId)) {
+                continue;
+            } 
 
             $author = $this->processUser($history['user']);
 
-            $this->inserter->insertHistoryItem($ticketId, $author, $history['date'], $history['value']);
-            if (!empty($history['id'])) {
-                $this->inserter->setHelpDeskHistoryId($ticketId, $history['id']);
-            }
+            $historyId = $this->inserter->insertHistoryItem($ticketId, $author, $history['date'], $history['value']);
+            $this->inserter->setHelpDeskHistoryId($historyId, $history['id']);
         }
     }
 
@@ -315,7 +311,7 @@ class Importer implements ImporterInterface
      */
     protected function processUser($userEntity)
     {
-        if (!$userEntity instanceof User || empty($userEntity->getEmail())) {
+        if (!$userEntity instanceof User) {
             return $this->currentUser;
         }
 

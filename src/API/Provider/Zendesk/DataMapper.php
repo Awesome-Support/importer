@@ -21,7 +21,7 @@ class DataMapper extends AbstractDataMapper
      *
      * @return void
      */
-    public function mapJSON($json, $key = '')
+    public function mapJSON($json, $key = '', $ticketId = null)
     {
         $packets = $this->fromJSON($json);
 
@@ -32,6 +32,11 @@ class DataMapper extends AbstractDataMapper
 
         if ('ticketEvents' === $key) {
             $this->mapEvents($packets->ticket_events);
+        }
+
+        if ('comments' === $key) {
+            $this->mapUsers($packets->users);
+            $this->mapComments($packets->comments, $ticketId);
         }
     }
 
@@ -110,9 +115,7 @@ class DataMapper extends AbstractDataMapper
 
             // Psst...using a closure to pass $data byRef.
             array_walk($ticketEvent->child_events, function ($childEvent) use (&$data) {
-                if (!isset($childEvent->public) || $childEvent->public) {
-                    $this->mapChildEvent($childEvent, $data);
-                }
+                $this->mapChildEvent($childEvent, $data);
             });
 
             // If there's a reply, then let's process it.
@@ -138,17 +141,6 @@ class DataMapper extends AbstractDataMapper
     protected function mapChildEvent(\stdClass $event, array &$data)
     {
         if ('Comment' === $event->event_type) {
-            $data['date'] = $this->toFormattedDate($event->created_at);
-
-            $data['replyId'] = $event->id;
-            $data['reply']   = [
-                'userId'    => $event->author_id,
-                'reply'     => $event->body,
-                'timestamp' => $data['date'],
-            ];
-            if ($this->hasAttachments($event)) {
-                $data['attachments'] = $event->attachments;
-            }
             return;
         }
 
@@ -169,6 +161,36 @@ class DataMapper extends AbstractDataMapper
                 $data['isOriginalTicket'] = true;
             }
             $data['requesterId'] = 0;
+        }
+    }
+
+    protected function mapComments(array $comments, $ticketId)
+    {
+        foreach ($comments as $comment) {
+            $data = [
+                'id'               => $comment->id,
+                'ticketId'         => $ticketId,
+                'date'             => $this->toFormattedDate($comment->created_at),
+                'timestamp'        => $this->toFormattedDate($comment->created_at),
+                'isOriginalTicket' => false,
+                'requesterId'      => 0,
+                'reply'            => null,
+                'replyId'          => $comment->id,
+                'attachments'      => $comment->attachments
+            ];
+
+            $data['reply'] = [
+                'userId'    => $comment->author_id,
+                'reply'     => $comment->body,
+                'timestamp' => $data['date'],
+                'private'   => false
+            ];
+            
+            if (isset($comment->public) && !$comment->public) {
+                $data['private'] = true;
+            }
+
+            $this->mapReplyOrTicket($data);
         }
     }
 
@@ -197,6 +219,7 @@ class DataMapper extends AbstractDataMapper
         }
 
         $this->replyRepository->create($data['ticketId'], $data['replyId'], $data['reply']);
+
         if (isset($data['attachments'])) {
             $this->mapAttachments($data['attachments'], $data['ticketId'], $data['replyId']);
         }

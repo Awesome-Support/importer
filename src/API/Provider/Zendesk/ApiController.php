@@ -18,7 +18,7 @@ class ApiController extends ProviderController
      ******************************************/
 
     /**
-     * Request the Tickets from Help Scout.
+     * Request the Tickets from Zendesk.
      *
      * @since 0.1.0
      *
@@ -39,23 +39,59 @@ class ApiController extends ProviderController
                 $this->dataMapper->mapJSON($json, $whichEndpoint);
             }
         }
+
+        // Process each of the items and request each comment.
+        foreach ($this->jsonResponses['tickets'] as $json) {
+            $packet = $this->fromJSON($json);
+            foreach ($packet->tickets as $ticket) {
+                echo '<pre>Getting '.$ticket->comment_count.' comments for ticket '.$ticket->id.'</pre>';
+                if ((int)$ticket->comment_count > 0 && $ticket->status != 'deleted') {
+                    $this->requestComments($ticket->id);
+                }
+            }
+        }
     }
 
     protected function requestPackets($whichEndpoint)
     {
         $nextPage = '';
         do {
-            $packet                                = $this->get(
+            $packet = $this->get(
                 $this->getEndpoint($whichEndpoint, $nextPage)
             );
             $this->jsonResponses[$whichEndpoint][] = $packet;
 
             // Unpack to get the next page and count.
-            $packet   = $this->fromJSON($packet);
-            $nextPage = $packet->next_page;
-        } while ($packet->count > self::MAX_PACKET_SIZE);
+            $packet = $this->fromJSON($packet);
+            if ($nextPage == urldecode($packet->next_page)) {
+                break;
+            }
+            $nextPage = urldecode($packet->next_page);
+        } while ($packet->count >= self::MAX_PACKET_SIZE);
     }
 
+    /**
+     * Request and map the comments for the specific ticket ID from Zendesk.
+     *
+     * @since 0.1.0
+     *
+     * @param int|string $ticketId
+     *
+     * @return void
+     */
+    protected function requestComments($ticketId)
+    {
+        $pattern = 'https://%s.zendesk.com/api/v2/tickets/%d/comments.json?include=users';
+        $url = sprintf(
+            $pattern,
+            $this->subdomain,
+            $ticketId
+        );
+
+        $packet = $this->get($url);
+        
+        $this->dataMapper->mapJSON($packet, 'comments', $ticketId);
+    }
     /**
      * Get the endpoint for the selected task, i.e. tickets or ticket events.
      *
@@ -78,12 +114,13 @@ class ApiController extends ProviderController
         }
         $pattern = 'https://%s.zendesk.com/api/v2/incremental/';
         $pattern .= 'ticketEvents' === $whichEndpoint
-            ? 'ticket_events.json?start_time=%s&include=comment_events'
+            ? 'ticket_events.json?start_time=%s'
             : 'tickets.json?start_time=%s&include=users,comment_count';
-        return sprintf(
+        $url = sprintf(
             $pattern,
             $this->subdomain,
             $this->getStartTime()
         );
+        return $url;
     }
 }

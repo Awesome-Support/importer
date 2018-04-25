@@ -198,7 +198,7 @@ class Inserter
      * @return int|WP_Error
      * @throws ImportException
      */
-    public function insertReply($ticketId, $reply, WP_User $author, $date, $read)
+    public function insertReply($ticketId, $reply, WP_User $author, $date, $read, $private = false)
     {
         wp_set_current_user($author->ID);
 
@@ -211,6 +211,13 @@ class Inserter
             ],
             $ticketId
         );
+
+        if ($private) {
+            $response = wp_update_post([
+                'ID'            => $replyId,
+                'post_type'     => 'ticket_note'
+            ]);
+        }
 
         wp_set_current_user($this->currentUserId);
 
@@ -263,9 +270,9 @@ class Inserter
             wpas_update_ticket_status($ticketId, $status);
         }
 
-        $postId = $this->locator->findPostByMetaId($this->wpdb->insert_id);
+        $historyId = $this->locator->findPostByMetaId($this->wpdb->insert_id);
         $response = wp_update_post([
-            'ID'            => $postId,
+            'ID'            => $historyId,
             'post_author'   => $author->ID,
             'post_date'     => $date,
             'post_date_gmt' => get_gmt_from_date($date),
@@ -292,6 +299,8 @@ class Inserter
             ],
             __CLASS__
         );
+
+        return $historyId;
     }
 
     /**
@@ -299,15 +308,15 @@ class Inserter
      *
      * @since 0.2.0
      *
-     * @param int $replyId The history's post ID.
+     * @param int $historyId The history's post ID.
      * @param string|int $helpDeskId The original ID.
      *
      * @return bool|int
      */
 
-    public function setHelpDeskHistoryId($replyId, $helpDeskId)
+    public function setHelpDeskHistoryId($historyId, $helpDeskId)
     {
-        return update_post_meta($replyId, '_wpas_help_desk_history_id', sanitize_text_field($helpDeskId));
+        return update_post_meta($historyId, '_wpas_help_desk_history_id', sanitize_text_field($helpDeskId));
     }
 
     /**
