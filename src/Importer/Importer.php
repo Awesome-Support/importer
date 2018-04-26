@@ -255,7 +255,8 @@ class Importer implements ImporterInterface
             $reply['reply'],
             $author,
             $reply['date'],
-            $reply['read']
+            $reply['read'],
+            $reply['private']
         );
 
         $this->inserter->setHelpDeskReplyId($replyId, $helpDeskReplyId);

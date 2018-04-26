@@ -166,6 +166,7 @@ abstract class DataMapper implements DataMapperInterface
                 'date'        => $reply['timestamp'],
                 'read'        => $reply['read'],
                 'attachments' => $reply['attachments'],
+                'private'     => $reply['private']
             ];
         }
         return $replies;

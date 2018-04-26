@@ -173,13 +173,15 @@ class Inserter
      */
     public function setHelpDeskTicketDate($ticketId, $createdAt, $updatedAt)
     {
-        $response = wp_update_post([
-            'ID'                => $ticketId,
-            'post_date'         => $createdAt,
-            'post_date_gmt'     => get_gmt_from_date($createdAt),
-            'post_modified'     => $updatedAt,
-            'post_modified_gmt' => get_gmt_from_date($updatedAt),
-        ]);
+        return wp_update_post(
+            [
+                'ID'                => $ticketId,
+                'post_date'         => $createdAt,
+                'post_date_gmt'     => get_gmt_from_date($createdAt),
+                'post_modified'     => $updatedAt,
+                'post_modified_gmt' => get_gmt_from_date($updatedAt),
+            ]
+        );
     }
     
     /**
@@ -228,22 +230,13 @@ class Inserter
                 'post_content'     => $reply,
                 'post_author'      => $author->ID,
                 'post_date'        => $date,
-                'post_date_gmt'    => get_gmt_from_date($date),
-                'post_modified'    => $date,
-                'post_modified_gmt'=> get_gmt_from_date($date),
                 'post_status'      => $read ? 'read' : 'unread',
             ], 
             $ticketId
         );
-
-        if ($private) {
-            $response = wp_update_post(
-                [
-                    'ID'            => $replyId,
-                    'post_type'     => 'ticket_note'
-                ]
-            );
-        }
+        
+        $this->setHelpDeskReplyDate($replyId, $date);
+        $this->setHelpDeskReplyPrivate($replyId, $private);
 
         wp_set_current_user($this->currentUserId);
 
@@ -269,6 +262,49 @@ class Inserter
         return update_post_meta($replyId, '_wpas_help_desk_reply_id', sanitize_text_field($helpDeskId));
     }
 
+    /**
+     * Set the Help Desk's Reply date in the post database table.
+     *
+     * @since 0.2.0
+     *
+     * @param int $replyId The reply's post ID.
+     * @param string $date The Help Desk's date.
+     *
+     * @return bool|int
+     */
+    public function setHelpDeskReplyDate($replyId, $date)
+    {
+        return wp_update_post(
+            [
+                'ID'                => $replyId,
+                'post_date'         => $date,
+                'post_date_gmt'     => get_gmt_from_date($date),
+                'post_modified'     => $date,
+                'post_modified_gmt' => get_gmt_from_date($date),
+            ]
+        );
+    }
+    
+    /**
+     * Set the Help Desk's Reply as a private note in the post database table.
+     *
+     * @since 0.2.0
+     *
+     * @param int $replyId The reply's post ID.
+     * @param bool $private The Help Desk's private status.
+     *
+     * @return bool|int
+     */
+    public function setHelpDeskReplyPrivate($replyId, $private)
+    {
+        return wp_update_post(
+            [
+                'ID'            => $replyId,
+                'post_type'     => ($private) ? 'ticket_note' : 'ticket_reply'
+            ]
+        );
+    }
+    
     /**
      * Insert/Update History Item into the database.
      *

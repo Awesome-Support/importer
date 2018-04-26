@@ -187,7 +187,7 @@ class DataMapper extends AbstractDataMapper
             ];
             
             if (isset($comment->public) && !$comment->public) {
-                $data['private'] = true;
+                $data['reply']['private'] = true;
             }
 
             $this->mapReplyOrTicket($data);
