@@ -221,7 +221,7 @@ class Inserter
      * @return int|WP_Error
      * @throws ImportException
      */
-    public function insertReply($ticketId, $reply, WP_User $author, $date, $read, $private = false)
+    public function insertReply($ticketId, $reply, WP_User $author, $date, $read)
     {
         wp_set_current_user($author->ID);
 
@@ -230,13 +230,13 @@ class Inserter
                 'post_content'     => $reply,
                 'post_author'      => $author->ID,
                 'post_date'        => $date,
+                'post_date_gmt'    => get_gmt_from_date($date),
+                'post_modified'    => $date,
+                'post_modified_gmt'=> get_gmt_from_date($date),
                 'post_status'      => $read ? 'read' : 'unread',
             ], 
             $ticketId
         );
-        
-        $this->setHelpDeskReplyDate($replyId, $date);
-        $this->setHelpDeskReplyPrivate($replyId, $private);
 
         wp_set_current_user($this->currentUserId);
 
@@ -291,16 +291,15 @@ class Inserter
      * @since 0.2.0
      *
      * @param int $replyId The reply's post ID.
-     * @param bool $private The Help Desk's private status.
      *
      * @return bool|int
      */
-    public function setHelpDeskReplyPrivate($replyId, $private)
+    public function setHelpDeskReplyPrivate($replyId)
     {
         return wp_update_post(
             [
                 'ID'            => $replyId,
-                'post_type'     => ($private) ? 'ticket_note' : 'ticket_reply'
+                'post_type'     => 'ticket_note'
             ]
         );
     }

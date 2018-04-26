@@ -255,11 +255,13 @@ class Importer implements ImporterInterface
             $reply['reply'],
             $author,
             $reply['date'],
-            $reply['read'],
-            $reply['private']
+            $reply['read']
         );
 
         $this->inserter->setHelpDeskReplyId($replyId, $helpDeskReplyId);
+        if ($reply['private']) {
+            $this->inserter->setHelpDeskReplyPrivate($replyId);
+        }
 
         // Whoops, not valid. Skip it.
         if (!$this->validator->isValidReplyId($replyId)) {
