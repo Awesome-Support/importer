@@ -92,7 +92,8 @@ class Inserter
             'email'      => $user->getEmail(),
             'first_name' => $user->getFirstName(),
             'last_name'  => $lastName ?: 'AwesomeSupport',
-            'pwd'        => 'xyz',
+            'pwd'        => wp_generate_password(),
+			'user_login' => $user->getEmail(),
         ], false);
 
         if ($userId instanceof WP_Error) {

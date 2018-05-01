@@ -1,6 +1,8 @@
 #1.5.0
 - [00] Numerous fixes contributed by [nmoinvaz ](https://github.com/nmoinvaz)
 - [00] Fix: If first name is blank, set it to "none" so that when inserting a user, WP allows the user creation without throwing an error.
+- [00] Tweak: Make sure user name is set to the email address
+- [00] Tweak: Make sure that the password for new users is set using wp_generate_password() instead of hardcoding it to 'xyz'.
 
 #1.0.2
 - [00] Check to see if the SAAS Ticket ID field exists before creating it.  Future versions of Awesome support will define this field so no need to define it here if it already exists.
