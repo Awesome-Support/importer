@@ -1,4 +1,8 @@
-1.0.2
+#1.5.0
+- [0] Numerous fixes contributed by [nmoinvaz ](https://github.com/nmoinvaz)
+
+
+#1.0.2
 - [0] Check to see if the SAAS Ticket ID field exists before creating it.  Future versions of Awesome support will define this field so no need to define it here if it already exists.
 
 # 0.2.2 / 1.0.1

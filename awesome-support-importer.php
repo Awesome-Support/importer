@@ -10,7 +10,7 @@
  * Plugin Name:       Awesome Support: Importer
  * Plugin URI:        TODO: URL to the final build.
  * Description:       Allows users to import tickets from a variety of help desks into Awesome Support.
- * Version:           1.0.2
+ * Version:           1.5.0
  * Author:            Pressware, LLC for Awesome Support
  * Author URI:        https://pressware.co
  * Text Domain:       awesome-support-importer
