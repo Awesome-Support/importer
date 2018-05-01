@@ -40,6 +40,11 @@ class User
         $this->firstName = $firstName;
         $this->lastName  = $lastName;
         $this->role      = $role;
+		
+		// Make sure first name is not empty since WP does not like it
+		if ( empty( $this->firstName ) ) {
+			$this->firstName = 'None';
+		}
     }
 
     /**
