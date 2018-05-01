@@ -128,11 +128,13 @@ abstract class DataMapper implements DataMapperInterface
         foreach ($this->ticketRepository->getAll() as $ticketId => $ticket) {
             $tickets[$ticketId] = new Ticket(
                 $ticketId,
-                $this->userRepository->get($ticket['agentID']),
-                $this->userRepository->get($ticket['customerID']),
+                isset($ticket['agentID']) ? $this->userRepository->get($ticket['agentID']) : null,
+                isset($ticket['customerID']) ? $this->userRepository->get($ticket['customerID']) : null,
                 $this->sourceName,
                 $ticket['subject'],
                 $ticket['description'],
+                $ticket['createdAt'],
+                $ticket['updatedAt'],
                 $ticket['attachments'],
                 $this->assembleReplies($ticketId),
                 $this->assembleHistory($ticketId)
@@ -164,6 +166,7 @@ abstract class DataMapper implements DataMapperInterface
                 'date'        => $reply['timestamp'],
                 'read'        => $reply['read'],
                 'attachments' => $reply['attachments'],
+                'private'     => (isset($reply['private'])) ? $reply['private'] : false
             ];
         }
         return $replies;
@@ -344,6 +347,7 @@ abstract class DataMapper implements DataMapperInterface
         switch ($eventStatus) {
             case 'closed':
             case 'solved':
+            case 'deleted':
                 return Status::CLOSED;
             case 'hold':
                 return Status::HOLD;

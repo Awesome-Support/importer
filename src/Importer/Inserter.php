@@ -96,7 +96,7 @@ class Inserter
         ], false);
 
         if ($userId instanceof WP_Error) {
-            $this->throwUserError($user, $userId);
+            $this->throwUserError($user, $userId, __METHOD__);
         }
 
         return get_user_by('id', $userId);
@@ -160,7 +160,30 @@ class Inserter
     {
         return update_post_meta($ticketId, '_wpas_help_desk_ticket_id', sanitize_text_field($helpDeskId));
     }
-
+    /**
+     * Set the Help Desk's Ticket date in the post meta database table.
+     *
+     * @since 0.2.0
+     *
+     * @param int $ticketId The ticket's post ID.
+     * @param string $createdAt The Help Desk's creation date.
+     * @param string $updatedAt The Help Desk's modified date.
+     *
+     * @return bool|int
+     */
+    public function setHelpDeskTicketDate($ticketId, $createdAt, $updatedAt)
+    {
+        return wp_update_post(
+            [
+                'ID'                => $ticketId,
+                'post_date'         => $createdAt,
+                'post_date_gmt'     => get_gmt_from_date($createdAt),
+                'post_modified'     => $updatedAt,
+                'post_modified_gmt' => get_gmt_from_date($updatedAt),
+            ]
+        );
+    }
+    
     /**
      * Upload and insert the attachment into the database.
      *
@@ -204,11 +227,14 @@ class Inserter
 
         $replyId = wpas_insert_reply(
             [
-                'post_content' => $reply,
-                'post_author'  => $author->ID,
-                'post_date'    => $date,
-                'post_status'  => $read ? 'read' : 'unread',
-            ],
+                'post_content'     => $reply,
+                'post_author'      => $author->ID,
+                'post_date'        => $date,
+                'post_date_gmt'    => get_gmt_from_date($date),
+                'post_modified'    => $date,
+                'post_modified_gmt'=> get_gmt_from_date($date),
+                'post_status'      => $read ? 'read' : 'unread',
+            ], 
             $ticketId
         );
 
@@ -237,6 +263,48 @@ class Inserter
     }
 
     /**
+     * Set the Help Desk's Reply date in the post database table.
+     *
+     * @since 0.2.0
+     *
+     * @param int $replyId The reply's post ID.
+     * @param string $date The Help Desk's date.
+     *
+     * @return bool|int
+     */
+    public function setHelpDeskReplyDate($replyId, $date)
+    {
+        return wp_update_post(
+            [
+                'ID'                => $replyId,
+                'post_date'         => $date,
+                'post_date_gmt'     => get_gmt_from_date($date),
+                'post_modified'     => $date,
+                'post_modified_gmt' => get_gmt_from_date($date),
+            ]
+        );
+    }
+    
+    /**
+     * Set the Help Desk's Reply as a private note in the post database table.
+     *
+     * @since 0.2.0
+     *
+     * @param int $replyId The reply's post ID.
+     *
+     * @return bool|int
+     */
+    public function setHelpDeskReplyPrivate($replyId)
+    {
+        return wp_update_post(
+            [
+                'ID'            => $replyId,
+                'post_type'     => 'ticket_note'
+            ]
+        );
+    }
+    
+    /**
      * Insert/Update History Item into the database.
      *
      * @since 0.1.0
@@ -254,25 +322,27 @@ class Inserter
         wp_set_current_user($author->ID);
 
         if ('closed' === $status) {
-            wpas_close_ticket($ticketId);
-            update_post_meta($ticketId, '_ticket_closed_on', $date);
-            update_post_meta($ticketId, '_ticket_closed_on_gmt', get_gmt_from_date($date));
+            wpas_close_ticket($ticketId, 0, true);
         }
-
         if ('open' === $status) {
             wpas_reopen_ticket($ticketId);
         }
-
         if ('closed' !== $status && 'open' !== $status) {
             wpas_update_ticket_status($ticketId, $status);
         }
 
+        $historyId = $this->locator->findPostByMetaId($this->wpdb->insert_id);
         $response = wp_update_post([
-            'ID'            => $this->wpdb->insert_id,
+            'ID'            => $historyId,
             'post_author'   => $author->ID,
             'post_date'     => $date,
             'post_date_gmt' => get_gmt_from_date($date),
         ]);
+
+        if ('closed' === $status) {
+            update_post_meta($ticketId, '_ticket_closed_on', $date);
+            update_post_meta($ticketId, '_ticket_closed_on_gmt', get_gmt_from_date($date));
+        }
 
         wp_set_current_user($this->currentUserId);
 
@@ -290,6 +360,24 @@ class Inserter
             ],
             __CLASS__
         );
+
+        return $historyId;
+    }
+
+    /**
+     * Set the history ID in the post meta database table.
+     *
+     * @since 0.2.0
+     *
+     * @param int $historyId The history's post ID.
+     * @param string|int $helpDeskId The original ID.
+     *
+     * @return bool|int
+     */
+
+    public function setHelpDeskHistoryId($historyId, $helpDeskId)
+    {
+        return update_post_meta($historyId, '_wpas_help_desk_history_id', sanitize_text_field($helpDeskId));
     }
 
     /**

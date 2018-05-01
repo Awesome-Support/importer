@@ -175,7 +175,7 @@ class Importer implements ImporterInterface
     protected function processTicket(Ticket $ticket)
     {
         // Look it up in the database. If it exists, return the ticket's post ID.
-        $ticketId = $this->locator->findTicket($ticket);
+        $ticketId = $this->locator->findTicketByHelpDeskId($ticket->getHelpDeskId());
         if ($this->validator->isValidTicketId($ticketId)) {
             return $ticketId;
         }
@@ -197,6 +197,7 @@ class Importer implements ImporterInterface
         );
 
         $this->inserter->setHelpDeskTicketId($ticketId, $ticket->getHelpDeskId());
+        $this->inserter->setHelpDeskTicketDate($ticketId, $ticket->getCreatedAt(), $ticket->getUpdatedAt());
 
         $this->numberTickets++;
         $this->processAttachments($ticket->getAttachments(), $ticketId);
@@ -225,7 +226,7 @@ class Importer implements ImporterInterface
             }
 
             // If it exists in the db, no need to import.
-            $replyId = $this->locator->findReply($ticketId, $reply['reply']);
+            $replyId = $this->locator->findReplyByHelpDeskId($helpDeskId);
             if ($this->validator->isValidReplyId($replyId)) {
                 continue;
             }
@@ -258,6 +259,9 @@ class Importer implements ImporterInterface
         );
 
         $this->inserter->setHelpDeskReplyId($replyId, $helpDeskReplyId);
+        if ($reply['private']) {
+            $this->inserter->setHelpDeskReplyPrivate($replyId);
+        }
 
         // Whoops, not valid. Skip it.
         if (!$this->validator->isValidReplyId($replyId)) {
@@ -287,9 +291,16 @@ class Importer implements ImporterInterface
             return;
         }
         foreach ($ticket->getHistory() as $history) {
+            // If it exists in the db, no need to import.
+            $historyId = $this->locator->findHistoryByHelpDeskId($history['id']);
+            if ($this->validator->isValidHistoryId($historyId)) {
+                continue;
+            } 
+
             $author = $this->processUser($history['user']);
 
-            $this->inserter->insertHistoryItem($ticketId, $author, $history['date'], $history['value']);
+            $historyId = $this->inserter->insertHistoryItem($ticketId, $author, $history['date'], $history['value']);
+            $this->inserter->setHelpDeskHistoryId($historyId, $history['id']);
         }
     }
 

@@ -71,6 +71,35 @@ class Locator
     }
 
     /**
+     * Checks if the ticket already exists in the database by help desk ID. If yes, the ticket
+     * post ID is returned; else false.
+     *
+     * @since 0.1.0
+     *
+     * @param HelpDeskId $helpDeskId
+     *
+     * @return bool|int
+     */
+    public function findTicketByHelpDeskId($helpDeskId)
+    {
+        $sqlQuery = $this->wpdb->prepare(
+            'SELECT * ' .
+            "FROM {$this->wpdb->postmeta} " .
+            "WHERE meta_key='_wpas_help_desk_ticket_id' AND meta_value = %s",
+            $helpDeskId
+        );
+
+        $records = $this->wpdb->get_results($sqlQuery);
+        if ($records) {
+            foreach ((array)$records as $record) {
+                return (int)$record->post_id;
+            }
+        }
+
+        return self::NO_RECORDS_FOUND;
+    }
+
+    /**
      * Search the database for this reply to avoid duplicates during import.
      *
      * @since 0.1.0
@@ -95,6 +124,92 @@ class Locator
         }
 
         return self::NO_MATCH_FOUND;
+    }
+
+    /**
+     * Checks if the reply already exists in the database by help desk ID. If yes, the reply
+     * post ID is returned; else false.
+     *
+     * @since 0.1.0
+     *
+     * @param HelpDeskId $helpDeskId
+     *
+     * @return bool|int
+     */
+    public function findReplyByHelpDeskId($helpDeskId)
+    {
+        $sqlQuery = $this->wpdb->prepare(
+            'SELECT * ' . 
+            "FROM {$this->wpdb->postmeta} " . 
+            "WHERE meta_key='_wpas_help_desk_reply_id' AND meta_value = %s",
+            $helpDeskId
+        );
+
+        $records = $this->wpdb->get_results($sqlQuery);
+        if ($records) {
+            foreach ((array)$records as $record) {
+                return (int)$record->post_id;
+            }
+        }
+
+        return self::NO_RECORDS_FOUND;
+    }
+
+    /**
+     * Checks if the history already exists in the database by help desk ID. If yes, the history
+     * post ID is returned; else false.
+     *
+     * @since 0.1.0
+     *
+     * @param HelpDeskId $helpDeskId
+     *
+     * @return bool|int
+     */
+    public function findHistoryByHelpDeskId($helpDeskId)
+    {
+        $sqlQuery = $this->wpdb->prepare(
+            'SELECT * ' . 
+            "FROM {$this->wpdb->postmeta} " . 
+            "WHERE meta_key='_wpas_help_desk_history_id' AND meta_value = %s",
+            $helpDeskId
+        );
+
+        $records = $this->wpdb->get_results($sqlQuery);
+        if ($records) {
+            foreach ((array)$records as $record) {
+                return (int)$record->post_id;
+            }
+        }
+
+        return self::NO_RECORDS_FOUND;
+    }
+
+    /**
+     * Finds a post id by meta id
+     *
+     * @since 0.1.0
+     *
+     * @param MetaId $metaId
+     *
+     * @return bool|int
+     */
+    public function findPostByMetaId($metaId)
+    {
+        $sqlQuery = $this->wpdb->prepare(
+            'SELECT * ' . 
+            "FROM {$this->wpdb->postmeta} " . 
+            "WHERE meta_id=%d",
+            (int)$metaId
+        );
+
+        $records = $this->wpdb->get_results($sqlQuery);
+        if ($records) {
+            foreach ((array)$records as $record) {
+                return (int)$record->post_id;
+            }
+        }
+
+        return self::NO_RECORDS_FOUND;
     }
 
     /**
@@ -138,8 +253,8 @@ class Locator
         }
 
         $sqlQuery = $this->wpdb->prepare(
-            'SELECT p.ID, p.post_parent as ticketId, p.guid as attachmentUrl' . "\n" .
-            "FROM {$this->wpdb->posts} AS p" . "\n" .
+            'SELECT p.ID, p.post_parent as ticketId, p.guid as attachmentUrl ' . 
+            "FROM {$this->wpdb->posts} AS p " . 
             "WHERE p.post_type = 'attachment' AND p.post_parent = %s",
             $ticketId
         );
@@ -168,8 +283,8 @@ class Locator
     protected function getRepliesFromDatabase($slug)
     {
         $sqlQuery = $this->wpdb->prepare(
-            'SELECT p.ID AS replyId, p.post_content AS reply' . "\n" .
-            "FROM {$this->wpdb->posts} AS p" . "\n" .
+            'SELECT p.ID AS replyId, p.post_content AS reply ' . 
+            "FROM {$this->wpdb->posts} AS p " . 
             "WHERE p.post_type = 'ticket_reply' AND p.post_name = %s OR p.post_name LIKE %s",
             $slug,
             $slug . '-%'

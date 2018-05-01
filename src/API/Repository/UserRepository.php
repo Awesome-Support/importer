@@ -33,6 +33,9 @@ class UserRepository extends Repository
         if (!property_exists($user, 'firstName')) {
             $user = $this->populateName($user);
         }
+        if (empty($user->email)) {
+            $user->email = $user->id.'@unknown.com';
+        }
 
         $model = new User(
             $user->email,
