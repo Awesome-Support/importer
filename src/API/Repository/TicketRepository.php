@@ -121,7 +121,7 @@ class TicketRepository extends Repository
                 'description' => '',
                 'attachments' => null,
                 'createdAt'   => '',
-                'updatedAt'   => '',
+                'updatedAt'   => ''
             ],
             $ticket
         );

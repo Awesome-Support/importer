@@ -44,6 +44,10 @@ class UserRepository extends Repository
             $this->getUserRole($user->role)
         );
 
+        if (isset($user->tags)) {
+            $model->setTags($user->tags);
+        }
+
         $this->set($user->id, $model);
     }
 
