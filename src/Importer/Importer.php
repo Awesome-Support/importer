@@ -232,7 +232,8 @@ class Importer implements ImporterInterface
             }
 
             $this->processReply($reply, $ticketId, $helpDeskId);
-            // Sometimes reply author is not set correctly
+            // Sometimes reply author is not set correctly so we update it just in case
+            $author = $this->processUser($reply['user']);
             $this->inserter->setHelpDeskReplyAuthor($replyId, $author);
         }
     }
