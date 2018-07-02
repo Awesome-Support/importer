@@ -232,6 +232,9 @@ class Importer implements ImporterInterface
             }
 
             $this->processReply($reply, $ticketId, $helpDeskId);
+            // Sometimes reply author is not set correctly so we update it just in case
+            $author = $this->processUser($reply['user']);
+            $this->inserter->setHelpDeskReplyAuthor($replyId, $author);
         }
     }
 
@@ -255,13 +258,11 @@ class Importer implements ImporterInterface
             $reply['reply'],
             $author,
             $reply['date'],
-            $reply['read']
+            $reply['read'],
+            $reply['private']
         );
 
         $this->inserter->setHelpDeskReplyId($replyId, $helpDeskReplyId);
-        if ($reply['private']) {
-            $this->inserter->setHelpDeskReplyPrivate($replyId);
-        }
 
         // Whoops, not valid. Skip it.
         if (!$this->validator->isValidReplyId($replyId)) {
@@ -287,11 +288,13 @@ class Importer implements ImporterInterface
      */
     protected function processHistory(Ticket $ticket, $ticketId)
     {
-        if (null === $ticket->getHistory()) {
+        $ticketHistory = $ticket->getHistory();
+        if (null === $ticketHistory) {
             return;
         }
-        foreach ($ticket->getHistory() as $history) {
-            // If it exists in the db, no need to import.
+
+        foreach ($ticketHistory as $history) {
+             // If it exists in the db, no need to import.
             $historyId = $this->locator->findHistoryByHelpDeskId($history['id']);
             if ($this->validator->isValidHistoryId($historyId)) {
                 continue;

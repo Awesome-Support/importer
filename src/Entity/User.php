@@ -27,6 +27,11 @@ class User
     private $role;
 
     /**
+     * @var array
+     */
+    private $tags;
+
+    /**
      * User constructor.
      *
      * @param string $role
@@ -47,6 +52,19 @@ class User
 		}
     }
 
+    /**
+     * @tags array
+     */
+    public function setTags($tags) {
+        $this->tags = $tags;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTags() {
+        return $this->tags;
+    }
     /**
      * @return string
      */
