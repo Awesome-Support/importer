@@ -72,6 +72,14 @@ class MenuSubscriber extends AbstractSubscriber
             'awesome_support_import_tickets',
             [$this, 'render']
         );
+        add_submenu_page(
+            null,
+            __('Awesome Support: Importer', 'awesome-support-importer'),
+            __('Get Access Token', 'awesome-support-importer'),
+            'manage_options',
+            'awesome_support_import_tickets_token',
+            [$this, 'render_access_token']
+        );
     }
 
     /**
@@ -109,6 +117,19 @@ class MenuSubscriber extends AbstractSubscriber
             : [];
 
         include_once $this->pluginPath . '/views/import-options.php';
+    }
+
+    /**
+     * Render the view. View data is compiled before calling the view.
+     *
+     * @since 0.1.0
+     *
+     * @return void
+     * @SuppressWarnings(PHPMD.UnusedLocalVariable)
+     */
+    public function render_access_token()
+    {
+        include_once $this->pluginPath . '/views/help-scout-access-token.php';
     }
 
     protected function hasUpdatedOption()

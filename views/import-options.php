@@ -143,10 +143,43 @@
                 // @codingStandardsIgnoreEnd
                 ?></p>
             <ol>
-                <li><?php _e('Enter the API Token first.', 'awesome-support-importer'); ?></li>
+                <li><?php _e('Enter the App ID, App Secret first.', 'awesome-support-importer'); ?></li>
+                <li><?php _e('Then click on the "Save" button.', 'awesome-support-importer'); ?></li>
+                <li><?php _e('Then click on the "Get Authorize" button.', 'awesome-support-importer'); ?></li>
+                <li><?php _e('Enter the API Token from Get Authorize page.', 'awesome-support-importer'); ?></li>
                 <li><?php _e('Then click on the "Get Mailboxes" button.', 'awesome-support-importer'); ?></li>
             </ol>
         </div>
+
+        <p class="option">
+            <label for="awesome-support-importer-app-id">
+                <?php _e("Help Desk's App ID", 'awesome-support-importer'); ?>
+            </label>
+            <input type="text"
+                   id="awesome-support-importer-app-id"
+                   title="awesome-support-importer-app-id"
+                   name="awesome-support-importer-app-id"
+                   value="<?php echo get_option('awesome-support-importer-app-id'); ?>"
+                   data-forapi="help-scout"
+                   readonly/>*
+        </p>
+
+        <p class="option">
+            <label for="awesome-support-importer-app-secret">
+                <?php _e("Help Desk's App Secret", 'awesome-support-importer'); ?>
+            </label>
+            <input type="text"
+                   id="awesome-support-importer-app-secret"
+                   title="awesome-support-importer-app-secret"
+                   name="awesome-support-importer-app-secret"
+                   value="<?php echo get_option('awesome-support-importer-app-secret'); ?>"
+                   data-forapi="help-scout"
+                   readonly/>*
+            <button id="awesome-support-helpscout-authorize"
+                    class="button button-secondary">
+                <?php _e('Get Authorize', 'awesome-support-importer'); ?>
+            </button>
+        </p>
 
         <p class="option">
             <label for="awesome-support-importer-api-token">

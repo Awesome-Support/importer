@@ -19,6 +19,8 @@ return [
         $optionsPrefix . 'api-token'     => '',
         $optionsPrefix . 'date-start'    => '',
         $optionsPrefix . 'date-end'      => '',
+        $optionsPrefix . 'app-secret'      => '',
+        $optionsPrefix . 'app-id'      => '',
     ],
     'screenName'        => 'awesome_support_import_tickets',
     'redirectUri'       => 'wp-admin/edit.php?post_type=ticket&page=awesome_support_import_tickets',

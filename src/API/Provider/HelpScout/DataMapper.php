@@ -19,9 +19,9 @@ class DataMapper extends AbstractDataMapper
      */
     public function mapJSON($json, $key = '')
     {
-        $conversation = $this->fromJSON($json)->item;
+        $conversation = $this->fromJSON($json);
 
-        if (!$this->withinDateRange($conversation->modifiedAt ?: $conversation->createdAt)) {
+        if (!$this->withinDateRange($conversation->userUpdatedAt ?: $conversation->createdAt)) {
             return;
         }
         $ticketId = $conversation->number;
@@ -29,7 +29,7 @@ class DataMapper extends AbstractDataMapper
         $this->mapUsers($conversation);
         $this->mapTicket($ticketId, $conversation);
 
-        foreach ((array)$conversation->threads as $thread) {
+        foreach ((array)$conversation->_embedded->threads as $thread) {
             $this->mapThreads($ticketId, $thread);
         }
     }
@@ -46,13 +46,13 @@ class DataMapper extends AbstractDataMapper
      */
     protected function mapTicket($ticketId, $conversation)
     {
-        $customerId = is_object($conversation->customer) ? $conversation->customer->id : 0;
+        $customerId = is_object($conversation->primaryCustomer) ? $conversation->primaryCustomer->id : 0;
         $this->ticketRepository->create($ticketId, [
-            'agentID'    => is_object($conversation->owner) ? $conversation->owner->id : 0,
-            'customerID' => is_object($conversation->customer) ? $conversation->customer->id : 0,
+            'agentID'    => is_object($conversation->createdBy) ? $conversation->createdBy->id : 0,
+            'customerID' => is_object($conversation->primaryCustomer) ? $conversation->primaryCustomer->id : 0,
             'subject'    => $conversation->subject,
             'createdAt'  => $conversation->createdAt,
-            'updatedAt'  => $conversation->modifiedAt,
+            'updatedAt'  => $conversation->userUpdatedAt,
         ]);
 
         $this->historyRepository->create(
@@ -153,10 +153,10 @@ class DataMapper extends AbstractDataMapper
      */
     protected function mapUsers($conversation)
     {
-        foreach (['owner', 'customer'] as $property) {
+        foreach (['createdBy', 'primaryCustomer'] as $property) {
             $this->mapUser(
                 $conversation->{$property},
-                'customer' === $property ? $property : 'agent'
+                'primaryCustomer' === $property ? $property : 'agent'
             );
         }
     }
@@ -183,7 +183,7 @@ class DataMapper extends AbstractDataMapper
         // Cast it to an array for strict mode, i.e. to add more properties.
         $user         = (array)$user;
         $user['role'] = $role;
-        $user['name'] = "{$user['firstName']} {$user['lastName']}";
+        $user['name'] = "{$user['first']} {$user['last']}";
 
         // Cast it back to a stdClass object and create the model.
         $this->userRepository->createModel((object)$user);

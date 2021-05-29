@@ -61,7 +61,8 @@
 Help Scout
  */
 [data-helpscout="1"],
-#awesome-support-get-helpscout-mailboxes {
+#awesome-support-get-helpscout-mailboxes,
+#awesome-support-get-helpscout-access-token {
   display: none;
 }
 
@@ -70,7 +71,8 @@ Help Scout
     display: block;
   }
 
-  #awesome-support-get-helpscout-mailboxes {
+  #awesome-support-get-helpscout-mailboxes,
+  #awesome-support-get-helpscout-access-token {
     display: inline-block;
   }
 }

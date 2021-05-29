@@ -32,7 +32,8 @@ abstract class AbstractAssetSubscriber implements HookSubscriberInterface
 
     public function isCurrentAdminPage()
     {
-        return 'ticket_page_awesome_support_import_tickets' === get_current_screen()->id;
+        return 'ticket_page_awesome_support_import_tickets' === get_current_screen()->id
+            || 'ticket_page_awesome_support_import_tickets_token' === get_current_screen()->id;
     }
 
     abstract public function enqueue();

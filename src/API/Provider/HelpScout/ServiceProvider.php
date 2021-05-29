@@ -79,6 +79,9 @@ class ServiceProvider
             'mailboxId' => $data[$optionsPrefix . 'api-mailbox'],
             'startDate' => $data[$optionsPrefix . 'date-start'],
             'endDate'   => $data[$optionsPrefix . 'date-end'],
+            'headers' => [
+                'Authorization' => 'Bearer '.$data[$optionsPrefix . 'api-token']
+            ]
         ];
     }
 
