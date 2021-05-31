@@ -145,6 +145,7 @@
             <ol>
                 <li><?php _e('Enter the App ID, App Secret first.', 'awesome-support-importer'); ?></li>
                 <li><?php _e('Then click on the "Save" button.', 'awesome-support-importer'); ?></li>
+                <li><?php _e('Copy this url "'. admin_url('edit.php?post_type=ticket&page=awesome_support_import_tickets_token') .'" to Redirection URL App.', 'awesome-support-importer'); ?></li>
                 <li><?php _e('Then click on the "Get Authorize" button.', 'awesome-support-importer'); ?></li>
                 <li><?php _e('Enter the API Token from Get Authorize page.', 'awesome-support-importer'); ?></li>
                 <li><?php _e('Then click on the "Get Mailboxes" button.', 'awesome-support-importer'); ?></li>
