@@ -99,19 +99,13 @@ class ApiController extends ProviderController
 
         // If date limited, append the start time to the endpoint.
         $startTime = $this->config['startDate'] ? $this->getStartTime() : '';
-        if ($startTime || $nextPage) {
-            $endpoint .= '?';
-        }
         if ($startTime) {
-            $endpoint .= "modifiedSince={$startTime}";
+            $endpoint .= "&modifiedSince={$startTime}";
         }
 
         // If a page number is provided, append the `page={$nextPage}` to endpoint.
         if ($nextPage) {
-            if ($startTime) {
-                $endpoint .= '&';
-            }
-            $endpoint .= "page={$nextPage}";
+            $endpoint .= "&page={$nextPage}";
         }
 
         return $endpoint;
