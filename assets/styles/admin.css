@@ -67,13 +67,15 @@
 Help Scout
  */
 [data-helpscout="1"],
-#awesome-support-get-helpscout-mailboxes {
+#awesome-support-get-helpscout-mailboxes,
+#awesome-support-get-helpscout-access-token {
     display: none;
 }
 #awesome-support-importer[data-selectedapi="help-scout"] [data-helpscout="1"] {
     display: block;
 }
 
-#awesome-support-importer[data-selectedapi="help-scout"] #awesome-support-get-helpscout-mailboxes {
+#awesome-support-importer[data-selectedapi="help-scout"] #awesome-support-get-helpscout-mailboxes,
+#awesome-support-importer[data-selectedapi="help-scout"] #awesome-support-get-helpscout-access-token {
     display: inline-block;
 }

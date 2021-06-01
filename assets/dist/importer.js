@@ -484,7 +484,8 @@ window.awesomeSupportImporter = window.awesomeSupportImporter || {
         $mailboxSelect,
         $helpScoutMessage,
         $mailboxesLoadedMessage,
-        $errorMessage;
+        $errorMessage,
+        $tokenMessage;
 
     /**
      * Initializes the settings page.
@@ -496,7 +497,10 @@ window.awesomeSupportImporter = window.awesomeSupportImporter || {
         $helpScoutMessage = $('#awesome-support-importing-getting-mailboxes-message');
         $mailboxesLoadedMessage = $('.awesome-support-importer-mailboxes-loaded');
         $errorMessage = $('.awesome-support-importer-message');
+        $tokenMessage = $('#awesome-support-access-token-message');
         $('#awesome-support-get-helpscout-mailboxes').on('click', getMailboxes);
+        $('#awesome-support-helpscout-authorize').on('click', getAuthorize);
+        $('#awesome-support-helpscout-access-token').on('click', getAccessToken);
     };
 
     helpScout.render = function (selectedApi) {
@@ -569,6 +573,48 @@ window.awesomeSupportImporter = window.awesomeSupportImporter || {
             $mailboxSelect.empty().append(html).val('');
         }).fail(function (jqXHR) {
             importer.loadErrorMessage(jqXHR);
+        }).always(function () {
+            // Always reset the form's interface when the Ajax request is done.
+            $helpScoutMessage.hide();
+            importer.resetFormAjaxDone();
+        });
+    };
+
+    var getAuthorize = function getAuthorize(event) {
+        event.preventDefault();
+        if (!$('#awesome-support-importer-app-id').val() || !$('#awesome-support-importer-app-secret').val()) {
+            return;
+        }
+
+        // Prepare the data to be sent to the server.
+        var data = importer.getOptionValues();
+        window.open("https://secure.helpscout.net/authentication/authorizeClientApplication?client_id=" + data['awesome-support-importer-app-id'] + "&state=" + data['awesome-support-importer-app-secret'], '_blank');
+    };
+
+    var getAccessToken = function getAccessToken(event) {
+        event.preventDefault();
+        if (!$('#awesome-support-importer-app-id').val()
+            || !$('#awesome-support-importer-app-secret').val()
+            || !$('#awesome-support-importer-app-code').val()) {
+            return;
+        }
+
+        // Prepare the data to be sent to the server.
+        var data = importer.getOptionValues();
+
+        var prepareData = {
+            code: data['awesome-support-importer-app-code'],
+            client_id: data['awesome-support-importer-app-id'],
+            client_secret: data['awesome-support-importer-app-secret'],
+            grant_type: 'authorization_code'
+        };
+
+        // Then do the actual request.
+        $.post('https://api.helpscout.net/v2/oauth2/token', prepareData, function (resJSON) {
+            console.log('got them!');
+            $tokenMessage.addClass('is-success').removeClass('is-error').empty().html('Access Token: ' + resJSON.access_token).show();
+        }).fail(function (jqXHR) {
+            $tokenMessage.removeClass('is-success').addClass('is-error').empty().html(jqXHR.responseJSON.error_description).show();
         }).always(function () {
             // Always reset the form's interface when the Ajax request is done.
             $helpScoutMessage.hide();

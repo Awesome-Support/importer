@@ -12,14 +12,15 @@ class ApiController extends ProviderController
      * @since 0.1.0
      *
      * @return array
-     * @link https://developer.helpscout.com/help-desk-api/mailboxes/list/
+     * @link https://developer.helpscout.com/mailbox-api/endpoints/mailboxes/list/
      */
     public function getMailboxes()
     {
         $selectOptions = [];
-        $endpoint      = 'https://api.helpscout.net/v1/mailboxes.json';
+        $endpoint      = 'https://api.helpscout.net//v2/mailboxes';
         $json          = $this->get($endpoint);
-        foreach ($this->fromJSON($json)->items as $mailbox) {
+        $_embedded = $this->fromJSON($json)->_embedded;
+        foreach ($_embedded->mailboxes as $mailbox) {
             $selectOptions[$mailbox->id] = $mailbox->name;
         }
         return $selectOptions;
@@ -47,18 +48,19 @@ class ApiController extends ProviderController
         do {
             $endpoint = $this->getEndpoint($pageNumber);
             $packet   = $this->fromJSON($this->get($endpoint));
+            $_embedded = $packet->_embedded;
 
             // No conversations. We're done.
-            if (!$packet->count) {
+            if (!$packet->page->totalElements) {
                 break;
             }
 
             // Process each of the items and request each conversation object.
-            foreach ($packet->items as $item) {
+            foreach ($_embedded->conversations as $item) {
                 $this->requestConversation((int)$item->id);
             }
             // continue iterating until there are no more pages to fetch.
-        } while ($packet->page < $packet->pages);
+        } while ($packet->page->number < $packet->page->totalPages);
     }
 
     /**
@@ -69,11 +71,11 @@ class ApiController extends ProviderController
      * @param int|string $conversationId
      *
      * @return void
-     * @link https://developer.helpscout.com/help-desk-api/conversations/get/
+     * @link https://developer.helpscout.com/mailbox-api/endpoints/conversations/get/
      */
     protected function requestConversation($conversationId)
     {
-        $endpoint = "https://api.helpscout.net/v1/conversations/{$conversationId}.json";
+        $endpoint = "https://api.helpscout.net/v2/conversations/{$conversationId}?embed=threads";
         $packet   = $this->get($endpoint);
         $this->dataMapper->mapJSON($packet);
     }
@@ -86,30 +88,24 @@ class ApiController extends ProviderController
      * @param int|null $nextPage If provided, appends the `page={$nextPage}` query var to endpoint
      *
      * @return string
-     * @link https://developer.helpscout.com/help-desk-api/conversations/list/
+     * @link https://developer.helpscout.com/mailbox-api/endpoints/conversations/list/
      */
     protected function getEndpoint($nextPage = null)
     {
         $endpoint = sprintf(
-            'https://api.helpscout.net/v1/mailboxes/%s/conversations.json',
+            'https://api.helpscout.net/v2/conversations?mailbox=%s',
             $this->config['mailboxId']
         );
 
         // If date limited, append the start time to the endpoint.
         $startTime = $this->config['startDate'] ? $this->getStartTime() : '';
-        if ($startTime || $nextPage) {
-            $endpoint .= '?';
-        }
         if ($startTime) {
-            $endpoint .= "modifiedSince={$startTime}";
+            $endpoint .= "&modifiedSince={$startTime}";
         }
 
         // If a page number is provided, append the `page={$nextPage}` to endpoint.
         if ($nextPage) {
-            if ($startTime) {
-                $endpoint .= '&';
-            }
-            $endpoint .= "page={$nextPage}";
+            $endpoint .= "&page={$nextPage}";
         }
 
         return $endpoint;
@@ -145,7 +141,7 @@ class ApiController extends ProviderController
     protected function mergeOptionsWithAuth(array $options)
     {
         return array_merge($options, [
-            'auth' => [$this->config['token'], 'X', 'basic',],
+            'headers' => $this->config['headers'],
         ]);
     }
 }
