@@ -75,7 +75,7 @@ class ApiController extends ProviderController
      */
     protected function requestConversation($conversationId)
     {
-        $endpoint = "https://api.helpscout.net/v2/conversations/{$conversationId}";
+        $endpoint = "https://api.helpscout.net/v2/conversations/{$conversationId}?embed=threads";
         $packet   = $this->get($endpoint);
         $this->dataMapper->mapJSON($packet);
     }

@@ -104,6 +104,9 @@ class DataMapper extends AbstractDataMapper
      */
     protected function isOriginalTicket($thread)
     {
+        if (!property_exists($thread, 'state')) {
+            return false;
+        }
         return 'published' === $thread->state && 'customer' === $thread->type;
     }
 
@@ -118,7 +121,9 @@ class DataMapper extends AbstractDataMapper
      */
     protected function isAReply($thread)
     {
-        return 'message' === $thread->type && $thread->actionSourceId;
+        return 'message' === $thread->type
+            && property_exists($thread->action->associatedEntities, 'originalConversation')
+            && !empty($thread->action->associatedEntities->originalConversation);
     }
 
     /**
@@ -137,8 +142,8 @@ class DataMapper extends AbstractDataMapper
     public function mapAttachment($attachment)
     {
         return [
-            'url'      => $attachment->url,
-            'filename' => $attachment->fileName,
+            'url'      => $attachment->_links->web->href,
+            'filename' => $attachment->filename,
         ];
     }
 
@@ -216,7 +221,7 @@ class DataMapper extends AbstractDataMapper
             ]
         );
 
-        $this->mapAttachments($thread->attachments, $ticketId, $replyId);
+        $this->mapAttachments($thread->_embedded->attachments, $ticketId, $replyId);
     }
 
     /**
@@ -232,7 +237,7 @@ class DataMapper extends AbstractDataMapper
     protected function mapOriginalTicket($ticketId, \stdClass $thread)
     {
         $this->ticketRepository->set("$ticketId.description", $thread->body);
-        $this->mapAttachments($thread->attachments, $ticketId);
+        $this->mapAttachments($thread->_embedded->attachments, $ticketId);
     }
 
     /**
